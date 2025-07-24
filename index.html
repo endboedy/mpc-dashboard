@@ -60,34 +60,6 @@ select, input[type="text"], textarea {
     padding: 5px;
 }
 </style>
-
-<script>
-function clearInputs(formId) {
-    const form = document.getElementById(formId);
-    if (form) {
-        const inputs = form.querySelectorAll("input, select, textarea");
-        inputs.forEach(input => {
-            if (input.type !== "submit" && input.type !== "button") {
-                input.value = "";
-            }
-        });
-    }
-}
-</script>
-
-<script>
-function updateNextColumn() {
-    const lashPMInput = document.getElementById("lashPMSMU");
-    const nextCell = document.getElementById("nextValue");
-    if (lashPMInput && nextCell) {
-        const lashPMValue = parseInt(lashPMInput.value);
-        if (!isNaN(lashPMValue)) {
-            nextCell.textContent = lashPMValue + 250;
-        }
-    }
-}
-document.getElementById("updateManualForm").addEventListener("submit", updateNextColumn);
-</script>
 </head>
 <body><div id="header" style="display:flex; justify-content:space-between; align-items:center; background:#2c3e50; color:white; padding:10px;"><button class="toggle-btn" onclick="toggleSidebar()" style="margin-left:10px;">☰</button><h1 style="margin:0 auto; font-size:24px;">MPC Dashboard</h1><div style="margin-left:auto; font-size:14px;">User: ndarboe.net</div></div>
 <header>MPC Dashboard</header>
@@ -233,5 +205,35 @@ function updateCurrent(event) {
 
 renderTable(data);
 </script>
+
+<script>
+function updatePMDaily() {
+    const currInput = document.getElementById('currentSMUInput');
+    const currValue = parseFloat(currInput.value);
+    if (isNaN(currValue)) return;
+
+    const table = document.getElementById('pmDailyTable');
+    for (let i = 1; i < table.rows.length; i++) {
+        const row = table.rows[i];
+        const lastPM = parseFloat(row.cells[1].innerText); // Assuming Last PM SMU is in column 2
+        const next = lastPM + 250;
+        const dev = currValue - next;
+        const planDate = new Date();
+        planDate.setDate(planDate.getDate() + ((next - currValue) / 15));
+
+        const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        const formattedDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+
+        row.cells[2].innerText = currValue;      // Curr
+        row.cells[3].innerText = dev.toFixed(2); // Dev (Hrs)
+        row.cells[4].innerText = formattedDate;  // Plan Date
+    }
+
+    // Clear input fields in sub menu 2 and 3
+    document.querySelectorAll('.subMenu2 input, .subMenu3 input').forEach(input => input.value = '');
+}
+document.getElementById('submitCurrentSMU').addEventListener('click', updatePMDaily);
+</script>
+
 </body>
 </html>
