@@ -60,6 +60,34 @@ select, input[type="text"], textarea {
     padding: 5px;
 }
 </style>
+
+<script>
+function clearInputs(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        const inputs = form.querySelectorAll("input, select, textarea");
+        inputs.forEach(input => {
+            if (input.type !== "submit" && input.type !== "button") {
+                input.value = "";
+            }
+        });
+    }
+}
+</script>
+
+<script>
+function updateNextColumn() {
+    const lashPMInput = document.getElementById("lashPMSMU");
+    const nextCell = document.getElementById("nextValue");
+    if (lashPMInput && nextCell) {
+        const lashPMValue = parseInt(lashPMInput.value);
+        if (!isNaN(lashPMValue)) {
+            nextCell.textContent = lashPMValue + 250;
+        }
+    }
+}
+document.getElementById("updateManualForm").addEventListener("submit", updateNextColumn);
+</script>
 </head>
 <body><div id="header" style="display:flex; justify-content:space-between; align-items:center; background:#2c3e50; color:white; padding:10px;"><button class="toggle-btn" onclick="toggleSidebar()" style="margin-left:10px;">☰</button><h1 style="margin:0 auto; font-size:24px;">MPC Dashboard</h1><div style="margin-left:auto; font-size:14px;">User: ndarboe.net</div></div>
 <header>MPC Dashboard</header>
@@ -204,29 +232,6 @@ function updateCurrent(event) {
 }
 
 renderTable(data);
-</script>
-
-<script>
-function calculateAndUpdate() {
-    const lastPMSMU = parseFloat(document.getElementById('lastPMSMU').value) || 0;
-    const currSMU = parseFloat(document.getElementById('currSMU').value) || 0;
-
-    const next = lastPMSMU + 250;
-    const dev = currSMU - next;
-    const planDate = new Date();
-    planDate.setDate(planDate.getDate() + ((next - currSMU) / 15));
-
-    const options = { day: '2-digit', month: 'short', year: 'numeric' };
-    const formattedDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-
-    document.getElementById('nextSMU').value = next.toFixed(2);
-    document.getElementById('devHrs').value = dev.toFixed(2);
-    document.getElementById('planDate').value = formattedDate;
-
-    // Clear input fields
-    document.getElementById('lastPMSMU').value = '';
-    document.getElementById('currSMU').value = '';
-}
 </script>
 </body>
 </html>
