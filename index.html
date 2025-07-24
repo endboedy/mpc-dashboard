@@ -204,36 +204,6 @@ function updateCurrent(event) {
 }
 
 renderTable(data);
-
-document.addEventListener("DOMContentLoaded", function () {
-    function showSuccessAndClear(formId) {
-        alert("Update berhasil!");
-        const form = document.getElementById(formId);
-        if (form) {
-            form.querySelectorAll("input, textarea, select").forEach(el => {
-                if (el.type !== "submit" && el.type !== "button") {
-                    el.value = "";
-                }
-            });
-        }
-    }
-
-    const manualForm = document.getElementById("updateManualForm");
-    if (manualForm) {
-        manualForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            showSuccessAndClear("updateManualForm");
-        });
-    }
-
-    const currentSMUForm = document.getElementById("updateCurrentSMUForm");
-    if (currentSMUForm) {
-        currentSMUForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            showSuccessAndClear("updateCurrentSMUForm");
-        });
-    }
-});
 </script>
 </body>
 </html>
