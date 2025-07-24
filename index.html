@@ -204,36 +204,36 @@ function updateCurrent(event) {
 }
 
 renderTable(data);
-</script>
 
-<script>
-function updatePMDaily() {
-    const currInput = document.getElementById('currentSMUInput');
-    const currValue = parseFloat(currInput.value);
-    if (isNaN(currValue)) return;
-
-    const table = document.getElementById('pmDailyTable');
-    for (let i = 1; i < table.rows.length; i++) {
-        const row = table.rows[i];
-        const lastPM = parseFloat(row.cells[1].innerText); // Assuming Last PM SMU is in column 2
-        const next = lastPM + 250;
-        const dev = currValue - next;
-        const planDate = new Date();
-        planDate.setDate(planDate.getDate() + ((next - currValue) / 15));
-
-        const options = { year: 'numeric', month: 'short', day: '2-digit' };
-        const formattedDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-
-        row.cells[2].innerText = currValue;      // Curr
-        row.cells[3].innerText = dev.toFixed(2); // Dev (Hrs)
-        row.cells[4].innerText = formattedDate;  // Plan Date
+document.addEventListener("DOMContentLoaded", function () {
+    function showSuccessAndClear(formId) {
+        alert("Update berhasil!");
+        const form = document.getElementById(formId);
+        if (form) {
+            form.querySelectorAll("input, textarea, select").forEach(el => {
+                if (el.type !== "submit" && el.type !== "button") {
+                    el.value = "";
+                }
+            });
+        }
     }
 
-    // Clear input fields in sub menu 2 and 3
-    document.querySelectorAll('.subMenu2 input, .subMenu3 input').forEach(input => input.value = '');
-}
-document.getElementById('submitCurrentSMU').addEventListener('click', updatePMDaily);
-</script>
+    const manualForm = document.getElementById("updateManualForm");
+    if (manualForm) {
+        manualForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            showSuccessAndClear("updateManualForm");
+        });
+    }
 
+    const currentSMUForm = document.getElementById("updateCurrentSMUForm");
+    if (currentSMUForm) {
+        currentSMUForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            showSuccessAndClear("updateCurrentSMUForm");
+        });
+    }
+});
+</script>
 </body>
 </html>
