@@ -34,6 +34,39 @@
             }
         }
     </script>
+
+<script>
+function showLoadingAndSubmit(formId, notificationId) {
+    const form = document.getElementById(formId);
+    const notification = document.getElementById(notificationId);
+    const inputs = form.querySelectorAll("input, select, textarea");
+    let valid = true;
+
+    inputs.forEach(input => {
+        if (input.hasAttribute("required") && !input.value.trim()) {
+            valid = false;
+        }
+    });
+
+    notification.innerHTML = "";
+    notification.style.color = "black";
+    notification.textContent = "Loading...";
+    
+    setTimeout(() => {
+        if (valid) {
+            notification.style.color = "green";
+            notification.textContent = "Update berhasil!";
+            inputs.forEach(input => input.value = "");
+        } else {
+            notification.style.color = "red";
+            notification.textContent = "Update gagal! Mohon isi semua input yang diperlukan.";
+        }
+    }, 1500);
+
+    return false; // prevent actual form submission
+}
+</script>
+
 </head>
 <body>
     <h2>Update Current SMU</h2>
