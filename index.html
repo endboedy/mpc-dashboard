@@ -51,54 +51,46 @@
 <td id="planDate">-</td>
 </tr>
 </table>
-<script>
-function showNotification(message, isSuccess) {
-    const notif = document.createElement('div');
-    notif.textContent = message;
-    notif.style.position = 'fixed';
-    notif.style.bottom = '20px';
-    notif.style.right = '20px';
-    notif.style.padding = '10px 20px';
-    notif.style.color = '#fff';
-    notif.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
-    notif.style.borderRadius = '5px';
-    notif.style.zIndex = '1000';
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 3000);
-}
+<div id="loading" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:20px;color:#333;z-index:999;">Loading...</div><div id="notification" style="display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:5px;font-size:16px;z-index:999;"></div><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const currentForm = document.querySelector("#updateCurrentForm");
+    const loading = document.getElementById("loading");
+    const notification = document.getElementById("notification");
 
-function handleSubmit(formId) {
-    const form = document.getElementById(formId);
-    const inputs = form.querySelectorAll('input, select, textarea');
-    let valid = true;
-    inputs.forEach(input => {
-        if (input.value.trim() === '') {
-            valid = false;
-        }
-    });
+    if (currentForm) {
+        currentForm.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-    const loading = document.createElement('div');
-    loading.textContent = 'Loading...';
-    loading.style.position = 'fixed';
-    loading.style.top = '50%';
-    loading.style.left = '50%';
-    loading.style.transform = 'translate(-50%, -50%)';
-    loading.style.padding = '20px';
-    loading.style.backgroundColor = '#333';
-    loading.style.color = '#fff';
-    loading.style.borderRadius = '5px';
-    loading.style.zIndex = '1000';
-    document.body.appendChild(loading);
+            const inputs = currentForm.querySelectorAll("input");
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    allFilled = false;
+                }
+            });
 
-    setTimeout(() => {
-        loading.remove();
-        if (valid) {
-            showNotification('Update berhasil!', true);
-            inputs.forEach(input => input.value = '');
-        } else {
-            showNotification('Update gagal! Mohon isi semua input yang diperlukan.', false);
-        }
-    }, 1500);
-}
+            loading.style.display = "block";
+            notification.style.display = "none";
+
+            setTimeout(() => {
+                loading.style.display = "none";
+                notification.style.display = "block";
+                if (allFilled) {
+                    notification.textContent = "Update berhasil!";
+                    notification.style.backgroundColor = "#4CAF50";
+                    notification.style.color = "#fff";
+                    inputs.forEach(input => input.value = "");
+                } else {
+                    notification.textContent = "Update gagal! Mohon isi semua input yang diperlukan.";
+                    notification.style.backgroundColor = "#f44336";
+                    notification.style.color = "#fff";
+                }
+                setTimeout(() => {
+                    notification.style.display = "none";
+                }, 3000);
+            }, 1500);
+        });
+    }
+});
 </script></body>
 </html>
