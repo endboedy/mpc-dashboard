@@ -205,5 +205,28 @@ function updateCurrent(event) {
 
 renderTable(data);
 </script>
+
+<script>
+function calculateAndUpdate() {
+    const lastPMSMU = parseFloat(document.getElementById('lastPMSMU').value) || 0;
+    const currSMU = parseFloat(document.getElementById('currSMU').value) || 0;
+
+    const next = lastPMSMU + 250;
+    const dev = currSMU - next;
+    const planDate = new Date();
+    planDate.setDate(planDate.getDate() + ((next - currSMU) / 15));
+
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+
+    document.getElementById('nextSMU').value = next.toFixed(2);
+    document.getElementById('devHrs').value = dev.toFixed(2);
+    document.getElementById('planDate').value = formattedDate;
+
+    // Clear input fields
+    document.getElementById('lastPMSMU').value = '';
+    document.getElementById('currSMU').value = '';
+}
+</script>
 </body>
 </html>
