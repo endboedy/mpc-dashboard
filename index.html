@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
+
 <html>
 <head>
-    <title>PM Daily Dashboard</title>
-    <script>
+<title>PM Daily Dashboard</title>
+<script>
         function updatePMDaily(curr, lastPM) {
             let next = lastPM + 250;
             let dev = curr - next;
@@ -34,55 +35,70 @@
             }
         }
     </script>
-
+</head>
+<body>
+<h2>Update Current SMU</h2>
+<input id="currInput" placeholder="Current SMU" type="number"/>
+<input id="lastPMInput" placeholder="Last PM SMU" type="number"/>
+<button onclick="submitUpdate()">Submit</button>
+<h2>PM Daily</h2>
+<table border="1">
+<tr><th>Curr</th><th>Next</th><th>Dev (Hrs)</th><th>Plan Date</th></tr>
+<tr>
+<td id="curr">-</td>
+<td id="next">-</td>
+<td id="dev">-</td>
+<td id="planDate">-</td>
+</tr>
+</table>
 <script>
-function showLoadingAndSubmit(formId, notificationId) {
-    const form = document.getElementById(formId);
-    const notification = document.getElementById(notificationId);
-    const inputs = form.querySelectorAll("input, select, textarea");
-    let valid = true;
+function showNotification(message, isSuccess) {
+    const notif = document.createElement('div');
+    notif.textContent = message;
+    notif.style.position = 'fixed';
+    notif.style.bottom = '20px';
+    notif.style.right = '20px';
+    notif.style.padding = '10px 20px';
+    notif.style.color = '#fff';
+    notif.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+    notif.style.borderRadius = '5px';
+    notif.style.zIndex = '1000';
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
 
+function handleSubmit(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input, select, textarea');
+    let valid = true;
     inputs.forEach(input => {
-        if (input.hasAttribute("required") && !input.value.trim()) {
+        if (input.value.trim() === '') {
             valid = false;
         }
     });
 
-    notification.innerHTML = "";
-    notification.style.color = "black";
-    notification.textContent = "Loading...";
-    
+    const loading = document.createElement('div');
+    loading.textContent = 'Loading...';
+    loading.style.position = 'fixed';
+    loading.style.top = '50%';
+    loading.style.left = '50%';
+    loading.style.transform = 'translate(-50%, -50%)';
+    loading.style.padding = '20px';
+    loading.style.backgroundColor = '#333';
+    loading.style.color = '#fff';
+    loading.style.borderRadius = '5px';
+    loading.style.zIndex = '1000';
+    document.body.appendChild(loading);
+
     setTimeout(() => {
+        loading.remove();
         if (valid) {
-            notification.style.color = "green";
-            notification.textContent = "Update berhasil!";
-            inputs.forEach(input => input.value = "");
+            showNotification('Update berhasil!', true);
+            inputs.forEach(input => input.value = '');
         } else {
-            notification.style.color = "red";
-            notification.textContent = "Update gagal! Mohon isi semua input yang diperlukan.";
+            showNotification('Update gagal! Mohon isi semua input yang diperlukan.', false);
         }
     }, 1500);
-
-    return false; // prevent actual form submission
 }
-</script>
-
-</head>
-<body>
-    <h2>Update Current SMU</h2>
-    <input type="number" id="currInput" placeholder="Current SMU">
-    <input type="number" id="lastPMInput" placeholder="Last PM SMU">
-    <button onclick="submitUpdate()">Submit</button>
-
-    <h2>PM Daily</h2>
-    <table border="1">
-        <tr><th>Curr</th><th>Next</th><th>Dev (Hrs)</th><th>Plan Date</th></tr>
-        <tr>
-            <td id="curr">-</td>
-            <td id="next">-</td>
-            <td id="dev">-</td>
-            <td id="planDate">-</td>
-        </tr>
-    </table>
-</body>
+</script></body>
 </html>
