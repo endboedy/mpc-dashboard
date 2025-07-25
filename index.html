@@ -205,5 +205,18 @@ function updateCurrent(event) {
 
 renderTable(data);
 </script>
-</body>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const rows = document.querySelectorAll("table tr");
+    rows.forEach((row, index) => {
+        const cells = row.querySelectorAll("td");
+        if (cells.length >= 4) {
+            const curr = parseFloat(cells[1].textContent) || 0;
+            const next = parseFloat(cells[2].textContent) || 0;
+            const devCell = cells[3];
+            devCell.textContent = (curr - next).toFixed(2);
+        }
+    });
+});
+</script></body>
 </html>
