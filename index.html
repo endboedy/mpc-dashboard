@@ -1,10 +1,9 @@
 
 <!DOCTYPE html>
-
 <html>
 <head>
-<title>PM Daily Dashboard</title>
-<script>
+    <title>PM Daily Dashboard</title>
+    <script>
         function updatePMDaily(curr, lastPM) {
             let next = lastPM + 250;
             let dev = curr - next;
@@ -37,55 +36,20 @@
     </script>
 </head>
 <body>
-<h2>Update Current SMU</h2>
-<input id="currInput" placeholder="Current SMU" type="number"/>
-<input id="lastPMInput" placeholder="Last PM SMU" type="number"/>
-<button onclick="submitUpdate()">Submit</button>
-<h2>PM Daily</h2>
-<table border="1">
-<tr><th>Curr</th><th>Next</th><th>Dev (Hrs)</th><th>Plan Date</th></tr>
-<tr>
-<td id="curr">-</td>
-<td id="next">-</td>
-<td id="dev">-</td>
-<td id="planDate">-</td>
-</tr>
-</table>
-<div id="loadingOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;text-align:center;padding-top:200px;font-size:24px;color:white;">Loading...</div><div id="notification" style="display:none;position:fixed;top:20px;right:20px;padding:10px 20px;border-radius:5px;font-weight:bold;z-index:10000;"></div><script>
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("#updateCurrentSMUForm");
-    if (form) {
-        form.addEventListener("submit", function(e) {
-            e.preventDefault();
-            const inputs = form.querySelectorAll("input");
-            let allFilled = true;
-            inputs.forEach(input => {
-                if (!input.value.trim()) {
-                    allFilled = false;
-                }
-            });
+    <h2>Update Current SMU</h2>
+    <input type="number" id="currInput" placeholder="Current SMU">
+    <input type="number" id="lastPMInput" placeholder="Last PM SMU">
+    <button onclick="submitUpdate()">Submit</button>
 
-            const loading = document.getElementById("loadingOverlay");
-            const notification = document.getElementById("notification");
-
-            loading.style.display = "block";
-            setTimeout(() => {
-                loading.style.display = "none";
-                if (allFilled) {
-                    notification.textContent = "Update berhasil!";
-                    notification.style.backgroundColor = "#4CAF50";
-                    inputs.forEach(input => input.value = "");
-                } else {
-                    notification.textContent = "Update gagal! Mohon isi semua input yang diperlukan.";
-                    notification.style.backgroundColor = "#f44336";
-                }
-                notification.style.display = "block";
-                setTimeout(() => {
-                    notification.style.display = "none";
-                }, 3000);
-            }, 1500);
-        });
-    }
-});
-</script></body>
+    <h2>PM Daily</h2>
+    <table border="1">
+        <tr><th>Curr</th><th>Next</th><th>Dev (Hrs)</th><th>Plan Date</th></tr>
+        <tr>
+            <td id="curr">-</td>
+            <td id="next">-</td>
+            <td id="dev">-</td>
+            <td id="planDate">-</td>
+        </tr>
+    </table>
+</body>
 </html>
