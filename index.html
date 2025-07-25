@@ -206,17 +206,64 @@ function updateCurrent(event) {
 renderTable(data);
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const rows = document.querySelectorAll("table tr");
-    rows.forEach((row, index) => {
-        const cells = row.querySelectorAll("td");
-        if (cells.length >= 4) {
-            const curr = parseFloat(cells[1].textContent) || 0;
-            const next = parseFloat(cells[2].textContent) || 0;
-            const devCell = cells[3];
-            devCell.textContent = (curr - next).toFixed(2);
-        }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    function updatePMTable(currValue, typeValue, rowIndex) {
+        const table = document.getElementById("pm-daily-table");
+        if (!table) return;
+
+        const rows = table.getElementsByTagName("tr");
+        if (rowIndex >= rows.length) return;
+
+        const row = rows[rowIndex];
+        const cells = row.getElementsByTagName("td");
+
+        const currCell = cells[2]; // Assuming Curr is in column index 2
+        const nextCell = cells[3]; // Assuming Next is in column index 3
+        const devCell = cells[4];  // Assuming Dev is in column index 4
+        const planDateCell = cells[5]; // Assuming Plan Date is in column index 5
+
+        const curr = parseFloat(currValue);
+        const type = parseFloat(typeValue);
+        const next = curr + type;
+        const dev = curr - next;
+
+        currCell.textContent = curr.toFixed(2);
+        nextCell.textContent = next.toFixed(2);
+        devCell.textContent = dev.toFixed(2);
+
+        const today = new Date();
+        const planDate = new Date();
+        planDate.setDate(today.getDate() + Math.ceil(dev)); // Example logic for Plan Date
+        planDateCell.textContent = planDate.toISOString().split("T")[0];
+    }
+
+    const manualForm = document.getElementById("update-manual-form");
+    if (manualForm) {
+        manualForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const currInput = document.getElementById("manual-curr");
+            const typeInput = document.getElementById("manual-type");
+            const rowIndexInput = document.getElementById("manual-row-index");
+
+            if (currInput && typeInput && rowIndexInput) {
+                updatePMTable(currInput.value, typeInput.value, parseInt(rowIndexInput.value));
+            }
+        });
+    }
+
+    const smuForm = document.getElementById("update-smu-form");
+    if (smuForm) {
+        smuForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const currInput = document.getElementById("smu-curr");
+            const typeInput = document.getElementById("smu-type");
+            const rowIndexInput = document.getElementById("smu-row-index");
+
+            if (currInput && typeInput && rowIndexInput) {
+                updatePMTable(currInput.value, typeInput.value, parseInt(rowIndexInput.value));
+            }
+        });
+    }
 });
 </script></body>
 </html>
