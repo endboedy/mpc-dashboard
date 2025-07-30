@@ -7,12 +7,7 @@
     "activity": "Track Type",
     "description": "XCE0001 Sch PM 250 Hrs - SMU 1000 Hrs",
     "lash_type_pm": 250,
-    "last_pm_smu": 750,
-    "curr": 900,
-    "last_pm_date": "2025-07-30",
-    "next": 1000,
-    "type": 250,
-    "dev": -100,
-    "plan_date": "2025-08-10 08:00:00"
+    "smu_lash_pm": 750,
+    "curr": 900
   }
 ]
