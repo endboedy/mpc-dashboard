@@ -47,127 +47,132 @@
     <tbody></tbody>
   </table>
 
-<script>
-  const equipmentData = [];
+  <script>
+    const githubToken = "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";
+    const repoOwner = "endoeedy";
+    const repoName = "mpc-dashboard";
+    const filePath = "data.json";
 
-  function calculateNext(smu_lash_pm) {
-    return smu_lash_pm + 250;
-  }
+    let equipmentData = [];
 
-  function calculateDev(curr, next) {
-    return curr - next;
-  }
+    function calculateNext(smu_lash_pm) {
+      return smu_lash_pm + 250;
+    }
 
-  function calculatePlanDate(curr, next) {
-    const now = new Date();
-    const offsetDays = (curr - next) / 15;
-    now.setDate(now.getDate() + offsetDays);
-    const day = String(now.getDate()).padStart(2, '0');
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = monthNames[now.getMonth()];
-    const year = now.getFullYear();
-    return `${day}-${month}-${year}`;
-  }
+    function calculateDev(curr, next) {
+      return curr - next;
+    }
 
-  function renderTable() {
-    const tbody = document.querySelector("#equipment-table tbody");
-    tbody.innerHTML = "";
-    equipmentData.forEach((item, index) => {
-      const next = calculateNext(item.smu_lash_pm);
-      const dev = calculateDev(item.curr, next);
-      const plan_date = calculatePlanDate(item.curr, next);
-      tbody.innerHTML += `
-        <tr>
-          <td>${item.equipment}</td>
-          <td>${item.model}</td>
-          <td>${item.pit}</td>
-          <td>${item.activity}</td>
-          <td>${item.description}</td>
-          <td>${item.lash_type_pm}</td>
-          <td>${item.smu_lash_pm}</td>
-          <td>${item.curr}</td>
-          <td>${next}</td>
-          <td>${dev.toFixed(2)}</td>
-          <td>${plan_date}</td>
-          <td>
-            <button onclick="editEquipment(${index})">Edit</button>
-            <button onclick="deleteEquipment(${index})">Delete</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
+    function calculatePlanDate(curr, next) {
+      const now = new Date();
+      const offsetDays = (curr - next) / 15;
+      now.setDate(now.getDate() + offsetDays);
+      const day = String(now.getDate()).padStart(2, '0');
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const month = monthNames[now.getMonth()];
+      const year = now.getFullYear();
+      return `${day}-${month}-${year}`;
+    }
 
-  function addEquipment() {
-    const item = {
-      equipment: document.getElementById("equipment").value,
-      model: document.getElementById("model").value,
-      pit: document.getElementById("pit").value,
-      activity: document.getElementById("activity").value,
-      description: document.getElementById("description").value,
-      lash_type_pm: parseInt(document.getElementById("lash_type_pm").value),
-      smu_lash_pm: parseFloat(document.getElementById("smu_lash_pm").value),
-      curr: parseFloat(document.getElementById("curr").value)
-    };
-    equipmentData.push(item);
-    renderTable();
-    saveToGitHub();
-  }
+    function renderTable() {
+      const tbody = document.querySelector("#equipment-table tbody");
+      tbody.innerHTML = "";
+      equipmentData.forEach((item, index) => {
+        const next = calculateNext(item.smu_lash_pm);
+        const dev = calculateDev(item.curr, next);
+        const plan_date = calculatePlanDate(item.curr, next);
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.equipment}</td>
+            <td>${item.model}</td>
+            <td>${item.pit}</td>
+            <td>${item.activity}</td>
+            <td>${item.description}</td>
+            <td>${item.lash_type_pm}</td>
+            <td>${item.smu_lash_pm}</td>
+            <td>${item.curr}</td>
+            <td>${next}</td>
+            <td>${dev.toFixed(2)}</td>
+            <td>${plan_date}</td>
+            <td>
+              <button onclick="editEquipment(${index})">Edit</button>
+              <button onclick="deleteEquipment(${index})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-  function editEquipment(index) {
-    const item = equipmentData[index];
-    const newEquipment = prompt("Edit Equipment:", item.equipment);
-    if (newEquipment !== null) {
-      item.equipment = newEquipment;
+    function addEquipment() {
+      const item = {
+        equipment: document.getElementById("equipment").value,
+        model: document.getElementById("model").value,
+        pit: document.getElementById("pit").value,
+        activity: document.getElementById("activity").value,
+        description: document.getElementById("description").value,
+        lash_type_pm: parseInt(document.getElementById("lash_type_pm").value),
+        smu_lash_pm: parseFloat(document.getElementById("smu_lash_pm").value),
+        curr: parseFloat(document.getElementById("curr").value)
+      };
+      equipmentData.push(item);
       renderTable();
       saveToGitHub();
     }
-  }
 
-  function deleteEquipment(index) {
-    if (confirm("Delete this equipment?")) {
-      equipmentData.splice(index, 1);
-      renderTable();
-      saveToGitHub();
+    function editEquipment(index) {
+      const item = equipmentData[index];
+      const newEquipment = prompt("Edit Equipment:", item.equipment);
+      if (newEquipment !== null) {
+        item.equipment = newEquipment;
+        renderTable();
+        saveToGitHub();
+      }
     }
-  }
 
-  async function saveToGitHub() {
-    const token = "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";
-    const repo = "mpc-dashboard";
-    const owner = "endoeedy";
-    const path = "data.json";
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-
-    const getResponse = await fetch(apiUrl, {
-      headers: { Authorization: `token ${token}` }
-    });
-    const getData = await getResponse.json();
-    const sha = getData.sha || null;
-
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
-    const body = {
-      message: "Update data.json from MPC Dashboard",
-      content: content,
-      sha: sha
-    };
-
-    const putResponse = await fetch(apiUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: `token ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (putResponse.ok) {
-      console.log("✅ Data berhasil disimpan ke GitHub.");
-    } else {
-      console.error("❌ Gagal menyimpan data ke GitHub.");
+    function deleteEquipment(index) {
+      if (confirm("Delete this equipment?")) {
+        equipmentData.splice(index, 1);
+        renderTable();
+        saveToGitHub();
+      }
     }
-  }
-</script>
+
+    async function saveToGitHub() {
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
+      const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+
+      try {
+        const getRes = await fetch(url, {
+          headers: {
+            Authorization: `token ${githubToken}`
+          }
+        });
+        const getData = await getRes.json();
+        const sha = getData.sha;
+
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${githubToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Update data.json from MPC Dashboard",
+            content: content,
+            sha: sha
+          })
+        });
+
+        if (res.ok) {
+          console.log("✅ Data berhasil disimpan ke GitHub.");
+        } else {
+          console.error("❌ Gagal menyimpan data ke GitHub.", await res.text());
+        }
+      } catch (error) {
+        console.error("❌ Error saat menyimpan ke GitHub:", error);
+      }
+    }
+  </script>
 </body>
 </html>
