@@ -26,6 +26,10 @@
   <input type="number" id="curr" placeholder="Curr">
   <button onclick="addEquipment()">Add</button>
 
+  <h3>GitHub Token</h3>
+  <input type="password" id="github-token" placeholder="Enter GitHub Token">
+  <button onclick="saveToGitHub()">Save to GitHub</button>
+
   <h3>Equipment List</h3>
   <table id="equipment-table">
     <thead>
@@ -46,10 +50,6 @@
     </thead>
     <tbody></tbody>
   </table>
-
-  <h3>Save to GitHub</h3>
-  <input type="password" id="github-token" placeholder="Enter GitHub Token">
-  <button onclick="saveToGitHub()">Save to GitHub</button>
 
   <script>
     let equipmentData = [];
@@ -143,39 +143,40 @@
 
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
 
-      // Get the current SHA of the file
-      const getResponse = await fetch(apiUrl, {
-        headers: {
-          Authorization: `token ${token}`,
-          Accept: "application/vnd.github.v3+json"
-        }
-      });
-
+      // Get SHA if file exists
       let sha = null;
-      if (getResponse.ok) {
-        const getData = await getResponse.json();
-        sha = getData.sha;
+      try {
+        const getRes = await fetch(apiUrl, {
+          headers: { Authorization: `token ${token}` }
+        });
+        if (getRes.ok) {
+          const getData = await getRes.json();
+          sha = getData.sha;
+        }
+      } catch (err) {
+        console.error("Error checking file:", err);
       }
 
       const body = {
         message: "Update data.json from MPC Dashboard",
         content: content,
-        sha: sha
+        ...(sha && { sha })
       };
 
-      const putResponse = await fetch(apiUrl, {
+      const res = await fetch(apiUrl, {
         method: "PUT",
         headers: {
           Authorization: `token ${token}`,
-          Accept: "application/vnd.github.v3+json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
 
-      if (putResponse.ok) {
-        alert("Data successfully saved to GitHub!");
+      if (res.ok) {
+        alert("Data berhasil disimpan ke GitHub!");
       } else {
-        alert("Failed to save data to GitHub.");
+        alert("Gagal menyimpan data ke GitHub.");
+        console.error(await res.text());
       }
     }
   </script>
