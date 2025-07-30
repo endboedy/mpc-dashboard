@@ -16,7 +16,7 @@
 
   <h3>Add Equipment</h3>
   <input type="text" id="equipment" placeholder="Equipment">
-  <input type="number" id="model" placeholder="Model">
+  <input type="text" id="model" placeholder="Model">
   <input type="text" id="pit" placeholder="PIT">
   <input type="text" id="activity" placeholder="Activity">
   <input type="text" id="description" placeholder="Description">
@@ -55,13 +55,19 @@
 
     function calculateDev(curr, next) {
       return curr - next;
-    }
-
+    } 
     function calculatePlanDate(curr, next) {
-      const now = new Date();
-      const offsetDays = (curr - next) / 15;
-      now.setDate(now.getDate() + offsetDays);
-      return now.toISOString().split('T')[0];
+    const now = new Date();
+    const offsetDays = (curr - next) / 15;
+    now.setDate(now.getDate() + offsetDays);
+
+    const day = String(now.getDate()).padStart(2, '0');
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[now.getMonth()];
+    const year = now.getFullYear();
+
+    return `${day}-${month}-${year}`;
     }
 
     function renderTable() {
