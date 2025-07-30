@@ -1,215 +1,109 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>MPC Dashboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header h1 {
-            margin: 0;
-        }
-        header .user {
-            font-weight: bold;
-        }
-        .menu-toggle {
-            font-size: 24px;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-        .sidebar {
-            width: 200px;
-            background-color: #34495e;
-            color: white;
-            position: fixed;
-            top: 50px;
-            bottom: 0;
-            left: 0;
-            padding-top: 20px;
-            transition: transform 0.3s ease;
-        }
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        .sidebar ul li:hover {
-            background-color: #3d566e;
-        }
-        .content {
-            margin-left: 200px;
-            padding: 20px;
-            transition: margin-left 0.3s ease;
-        }
-        .content.full {
-            margin-left: 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-        table td.right {
-            text-align: right;
-        }
-        .dev-red {
-            background-color: red;
-            color: white;
-        }
-        .dev-green {
-            background-color: green;
-            color: white;
-        }
-        .dev-yellow {
-            background-color: yellow;
-            color: black;
-        }
-        select {
-            margin-right: 10px;
-            padding: 5px;
-        }
-    </style>
+  <title>MPC Dashboard</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    input, button { margin: 5px; }
+  </style>
 </head>
 <body>
-    <header>
-        <div style="display: flex; align-items: center;">
-            <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
-            <h1>MPC Dashboard</h1>
-        </div>
-        <div class="user">ndarboe.net</div>
-    </header>
-    <div class="sidebar" id="sidebar">
-        <ul>
-            <li>Dashboard</li>
-            <li>PM Daily</li>
-            <li>Update Manual</li>
-            <li>Update Current SMU</li>
-        </ul>
-    </div>
-    <div class="content" id="content">
-        <h2>PM Daily Data</h2>
-        <div>
-            <label for="pitFilter">Filter PIT:</label>
-            <select id="pitFilter" onchange="applyFilters()">
-                <option value="">All</option>
-            </select>
-            <label for="activityFilter">Filter Activity:</label>
-            <select id="activityFilter" onchange="applyFilters()">
-                <option value="">All</option>
-            </select>
-        </div>
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Equipment</th>
-                    <th>Model</th>
-                    <th>Description</th>
-                    <th>Lash Type PM</th>
-                    <th>Curr</th>
-                    <th>Next</th>
-                    <th>Type</th>
-                    <th>Dev (Hrs)</th>
-                    <th>Plan Date</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('hidden');
-            document.getElementById('content').classList.toggle('full');
-        }
+  <h2>MPC Dashboard</h2>
+  <p>User: ndarboe.net</p>
 
-        let rawData = [];
+  <h3>Add Equipment</h3>
+  <input type="text" id="equipment" placeholder="Equipment">
+  <input type="number" id="model" placeholder="Model">
+  <input type="text" id="description" placeholder="Description">
+  <input type="number" id="lash_type_pm" placeholder="Lash Type PM">
+  <input type="number" id="curr" placeholder="Curr">
+  <input type="number" id="next" placeholder="Next">
+  <input type="number" id="type" placeholder="Type">
+  <input type="number" id="dev" placeholder="Dev (Hrs)">
+  <input type="datetime-local" id="plan_date">
+  <button onclick="addEquipment()">Add</button>
 
-        function applyFilters() {
-            const pit = document.getElementById('pitFilter').value;
-            const activity = document.getElementById('activityFilter').value;
-            const filtered = rawData.filter(item => 
-                (pit === '' || item.PIT === pit) &&
-                (activity === '' || item.Activity === activity)
-            );
-            renderTable(filtered);
-        }
+  <h3>Equipment List</h3>
+  <table id="equipment-table">
+    <thead>
+      <tr>
+        <th>Equipment</th>
+        <th>Model</th>
+        <th>Description</th>
+        <th>Lash Type PM</th>
+        <th>Curr</th>
+        <th>Next</th>
+        <th>Type</th>
+        <th>Dev (Hrs)</th>
+        <th>Plan Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-        function renderTable(data) {
-            const tbody = document.querySelector('#dataTable tbody');
-            tbody.innerHTML = '';
-            data.forEach(item => {
-                const description = `${item.Equipment} Sch PM ${item.Activity} Hrs - SMU ${item['Lash SMU PM']}`;
-                const next = item['Lash SMU PM'] + 250;
-                const dev = item.Curr - next;
-                const planDate = new Date(item['Plan Date']);
-                const planDateFormatted = planDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  <script>
+    let equipmentData = [];
 
-                let devClass = '';
-                if (dev > 25) devClass = 'dev-red';
-                else if (dev >= 1 && dev <= 25) devClass = 'dev-green';
-                else if (dev >= -25 && dev < 0) devClass = 'dev-yellow';
+    function renderTable() {
+      const tbody = document.querySelector("#equipment-table tbody");
+      tbody.innerHTML = "";
+      equipmentData.forEach((item, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.equipment}</td>
+            <td>${item.model}</td>
+            <td>${item.description}</td>
+            <td>${item.lash_type_pm}</td>
+            <td>${item.curr}</td>
+            <td>${item.next}</td>
+            <td>${item.type}</td>
+            <td>${item.dev}</td>
+            <td>${item.plan_date}</td>
+            <td>
+              <button onclick="editEquipment(${index})">Edit</button>
+              <button onclick="deleteEquipment(${index})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.Equipment}</td>
-                    <td>${item.Model}</td>
-                    <td>${description}</td>
-                    <td>${item['Lash Type PM']}</td>
-                    <td class="right">${item.Curr}</td>
-                    <td class="right">${next}</td>
-                    <td class="right">${item.Type}</td>
-                    <td class="right ${devClass}">${dev.toFixed(1)}</td>
-                    <td class="right">${planDateFormatted}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+    function addEquipment() {
+      const item = {
+        equipment: document.getElementById("equipment").value,
+        model: parseInt(document.getElementById("model").value),
+        description: document.getElementById("description").value,
+        lash_type_pm: parseInt(document.getElementById("lash_type_pm").value),
+        curr: parseFloat(document.getElementById("curr").value),
+        next: parseFloat(document.getElementById("next").value),
+        type: parseInt(document.getElementById("type").value),
+        dev: parseFloat(document.getElementById("dev").value),
+        plan_date: document.getElementById("plan_date").value
+      };
+      equipmentData.push(item);
+      renderTable();
+    }
 
-        fetch('pm_data.json')
-            .then(response => response.json())
-            .then(data => {
-                rawData = data;
-                const pitSet = new Set(data.map(item => item.PIT));
-                const activitySet = new Set(data.map(item => item.Activity));
-                pitSet.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p;
-                    opt.textContent = p;
-                    document.getElementById('pitFilter').appendChild(opt);
-                });
-                activitySet.forEach(a => {
-                    const opt = document.createElement('option');
-                    opt.value = a;
-                    opt.textContent = a;
-                    document.getElementById('activityFilter').appendChild(opt);
-                });
-                renderTable(data);
-            })
-            .catch(error => {
-                console.error('Failed to load data:', error);
-                document.querySelector('#dataTable tbody').innerHTML = '<tr><td colspan="9">Failed to load data.</td></tr>';
-            });
-    </script>
+    function editEquipment(index) {
+      const item = equipmentData[index];
+      const newEquipment = prompt("Edit Equipment:", item.equipment);
+      if (newEquipment !== null) {
+        item.equipment = newEquipment;
+        renderTable();
+      }
+    }
+
+    function deleteEquipment(index) {
+      if (confirm("Delete this equipment?")) {
+        equipmentData.splice(index, 1);
+        renderTable();
+      }
+    }
+  </script>
 </body>
 </html>
