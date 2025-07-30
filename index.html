@@ -26,10 +26,6 @@
   <input type="number" id="curr" placeholder="Curr">
   <button onclick="addEquipment()">Add</button>
 
-  <h3>GitHub Token</h3>
-  <input type="password" id="github-token" placeholder="Enter GitHub Token">
-  <button onclick="saveToGitHub()">Save to GitHub</button>
-
   <h3>Equipment List</h3>
   <table id="equipment-table">
     <thead>
@@ -52,7 +48,11 @@
   </table>
 
   <script>
-    let equipmentData = [];
+    const equipmentData = [];
+    const githubToken = "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";
+    const repoOwner = "endoeedy";
+    const repoName = "mpc-dashboard";
+    const filePath = "data.json";
 
     function calculateNext(smu_lash_pm) {
       return smu_lash_pm + 250;
@@ -103,6 +103,51 @@
       });
     }
 
+    async function saveToGitHub() {
+      const content = JSON.stringify(equipmentData, null, 2);
+      const encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+      const getShaUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+      const headers = {
+        "Authorization": `token ${githubToken}`,
+        "Accept": "application/vnd.github.v3+json"
+      };
+
+      let sha = null;
+      try {
+        const response = await fetch(getShaUrl, { headers });
+        if (response.ok) {
+          const data = await response.json();
+          sha = data.sha;
+        }
+      } catch (error) {
+        console.error("Error fetching SHA:", error);
+      }
+
+      const body = {
+        message: "Update data.json from MPC Dashboard",
+        content: encodedContent,
+        branch: "main"
+      };
+      if (sha) body.sha = sha;
+
+      try {
+        const response = await fetch(getShaUrl, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify(body)
+        });
+        if (response.ok) {
+          alert("Data berhasil disimpan ke GitHub!");
+        } else {
+          alert("Gagal menyimpan data ke GitHub.");
+        }
+      } catch (error) {
+        console.error("Error saving to GitHub:", error);
+        alert("Gagal menyimpan data ke GitHub.");
+      }
+    }
+
     function addEquipment() {
       const item = {
         equipment: document.getElementById("equipment").value,
@@ -116,6 +161,7 @@
       };
       equipmentData.push(item);
       renderTable();
+      saveToGitHub();
     }
 
     function editEquipment(index) {
@@ -124,6 +170,7 @@
       if (newEquipment !== null) {
         item.equipment = newEquipment;
         renderTable();
+        saveToGitHub();
       }
     }
 
@@ -131,52 +178,7 @@
       if (confirm("Delete this equipment?")) {
         equipmentData.splice(index, 1);
         renderTable();
-      }
-    }
-
-    async function saveToGitHub() {
-      const token = document.getElementById("github-token").value;
-      const repo = "mpc-dashboard";
-      const owner = "endoeedy";
-      const path = "data.json";
-      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
-
-      // Get SHA if file exists
-      let sha = null;
-      try {
-        const getRes = await fetch(apiUrl, {
-          headers: { Authorization: `token ${token}` }
-        });
-        if (getRes.ok) {
-          const getData = await getRes.json();
-          sha = getData.sha;
-        }
-      } catch (err) {
-        console.error("Error checking file:", err);
-      }
-
-      const body = {
-        message: "Update data.json from MPC Dashboard",
-        content: content,
-        ...(sha && { sha })
-      };
-
-      const res = await fetch(apiUrl, {
-        method: "PUT",
-        headers: {
-          Authorization: `token ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (res.ok) {
-        alert("Data berhasil disimpan ke GitHub!");
-      } else {
-        alert("Gagal menyimpan data ke GitHub.");
-        console.error(await res.text());
+        saveToGitHub();
       }
     }
   </script>
