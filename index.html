@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MPC Dashboard</title>
+  <title>MPC Dashboard - Debug Mode</title>
   <style>
     body { font-family: Arial; margin: 20px; }
     table { border-collapse: collapse; width: 100%; margin-top: 20px; }
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h2>MPC Dashboard</h2>
+  <h2>MPC Dashboard (Debug Mode)</h2>
   <p>User: ndarboe.net</p>
 
   <h3>Add Equipment</h3>
@@ -25,6 +25,10 @@
   <input type="number" id="smu_lash_pm" placeholder="SMU Lash PM">
   <input type="number" id="curr" placeholder="Curr">
   <button onclick="addEquipment()">Add</button>
+
+  <h3>GitHub Token</h3>
+  <input type="password" id="github-token" placeholder="Enter GitHub Token">
+  <button onclick="saveToGitHub()">Save to GitHub</button>
 
   <h3>Equipment List</h3>
   <table id="equipment-table">
@@ -48,11 +52,7 @@
   </table>
 
   <script>
-    const equipmentData = [];
-    const githubToken = "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";
-    const repoOwner = "endoeedy";
-    const repoName = "mpc-dashboard";
-    const filePath = "data.json";
+    let equipmentData = [];
 
     function calculateNext(smu_lash_pm) {
       return smu_lash_pm + 250;
@@ -103,51 +103,6 @@
       });
     }
 
-    async function saveToGitHub() {
-      const content = JSON.stringify(equipmentData, null, 2);
-      const encodedContent = btoa(unescape(encodeURIComponent(content)));
-
-      const getShaUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
-      const headers = {
-        "Authorization": `token ${githubToken}`,
-        "Accept": "application/vnd.github.v3+json"
-      };
-
-      let sha = null;
-      try {
-        const response = await fetch(getShaUrl, { headers });
-        if (response.ok) {
-          const data = await response.json();
-          sha = data.sha;
-        }
-      } catch (error) {
-        console.error("Error fetching SHA:", error);
-      }
-
-      const body = {
-        message: "Update data.json from MPC Dashboard",
-        content: encodedContent,
-        branch: "main"
-      };
-      if (sha) body.sha = sha;
-
-      try {
-        const response = await fetch(getShaUrl, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify(body)
-        });
-        if (response.ok) {
-          alert("Data berhasil disimpan ke GitHub!");
-        } else {
-          alert("Gagal menyimpan data ke GitHub.");
-        }
-      } catch (error) {
-        console.error("Error saving to GitHub:", error);
-        alert("Gagal menyimpan data ke GitHub.");
-      }
-    }
-
     function addEquipment() {
       const item = {
         equipment: document.getElementById("equipment").value,
@@ -161,7 +116,6 @@
       };
       equipmentData.push(item);
       renderTable();
-      saveToGitHub();
     }
 
     function editEquipment(index) {
@@ -170,7 +124,6 @@
       if (newEquipment !== null) {
         item.equipment = newEquipment;
         renderTable();
-        saveToGitHub();
       }
     }
 
@@ -178,7 +131,55 @@
       if (confirm("Delete this equipment?")) {
         equipmentData.splice(index, 1);
         renderTable();
-        saveToGitHub();
+      }
+    }
+
+    async function saveToGitHub() {
+      const token = document.getElementById("github-token").value;
+      const repo = "mpc-dashboard";
+      const owner = "endoeedy";
+      const path = "data.json";
+      const branch = "main";
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+      try {
+        const getRes = await fetch(apiUrl, {
+          headers: {
+            Authorization: `token ${token}`,
+            Accept: "application/vnd.github.v3+json"
+          }
+        });
+
+        const getData = await getRes.json();
+        const sha = getData.sha || null;
+
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
+
+        const putRes = await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${token}`,
+            Accept: "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({
+            message: "Update data.json from MPC Dashboard",
+            content: content,
+            branch: branch,
+            sha: sha
+          })
+        });
+
+        const putData = await putRes.json();
+
+        if (putRes.ok) {
+          alert("✅ Data berhasil disimpan ke GitHub!");
+        } else {
+          console.error("❌ Gagal menyimpan ke GitHub:", putData);
+          alert("❌ Gagal menyimpan data ke GitHub. Cek console untuk detail.");
+        }
+      } catch (error) {
+        console.error("❌ Error saat menyimpan ke GitHub:", error);
+        alert("❌ Terjadi error saat menyimpan ke GitHub. Cek console.");
       }
     }
   </script>
