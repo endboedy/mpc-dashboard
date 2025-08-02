@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MPC Dashboard</title>
+</head>
+<body>
+  <h1>MPC Dashboard</h1>
+  <h3>MPC Dashboard</h3>
+  <p>User: ndarboe.net</p>
+
+  <h4>Add Equipment</h4>
+
+  <form id="equipmentForm" onsubmit="saveToGitHub(event)">
+    <label>Equipment: <input type="text" id="equipment" required></label><br>
+    <label>Model: <input type="text" id="model" required></label><br>
+    <label>PIT: <input type="text" id="pit" required></label><br>
+    <label>Activity: <input type="text" id="activity" required></label><br>
+    <label>Description: <input type="text" id="description" required></label><br>
+    <label>Lash Type PM: <input type="text" id="lashTypePM" required></label><br>
+    <label>SMU Lash PM: <input type="text" id="smuLashPM" required></label><br>
+    <label>Curr: <input type="text" id="curr" required></label><br>
+    <label>Next: <input type="text" id="next" required></label><br>
+    <label>Dev: <input type="text" id="dev" required></label><br>
+    <label>Plan Date: <input type="date" id="planDate" required></label><br>
+    <button type="submit">Simpan</button>
+  </form>
+
+  <h4>Equipment List</h4>
+  <table>
+    <tr>
+      <th>Equipment</th>
+      <th>Model</th>
+      <th>PIT</th>
+      <th>Activity</th>
+      <th>Description</th>
+      <th>Lash Type PM</th>
+      <th>SMU Lash PM</th>
+      <th>Curr</th>
+      <th>Next</th>
+      <th>Dev</th>
+      <th>Plan Date</th>
+      <th>Actions</th>
+    </tr>
+  </table>
+
+  <script>
+    async function saveToGitHub(event) {
+      event.preventDefault();
+
+      const githubToken = prompt("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");
+      const repoOwner = "endoeedy";
+      const repoName = "mpc-dashboard";
+      const filePath = "data.json";
+
+      const data = {
+        equipment: document.getElementById("equipment").value,
+        model: document.getElementById("model").value,
+        pit: document.getElementById("pit").value,
+        activity: document.getElementById("activity").value,
+        description: document.getElementById("description").value,
+        lashTypePM: document.getElementById("lashTypePM").value,
+        smuLashPM: document.getElementById("smuLashPM").value,
+        curr: document.getElementById("curr").value,
+        next: document.getElementById("next").value,
+        dev: document.getElementById("dev").value,
+        planDate: document.getElementById("planDate").value
+      };
+
+      const headers = {
+        "Authorization": `token ${githubToken}`,
+        "Accept": "application/vnd.github.v3+json"
+      };
+
+      const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+      const getResponse = await fetch(getUrl, { headers });
+      const getResult = await getResponse.json();
+
+      let existingData = [];
+      if (getResult.content) {
+        const content = atob(getResult.content);
+        existingData = JSON.parse(content);
+      }
+
+      existingData.push(data);
+      const updatedContent = btoa(JSON.stringify(existingData, null, 2));
+
+      const putBody = {
+        message: "Update data.json",
+        content: updatedContent,
+        sha: getResult.sha
+      };
+
+      const putResponse = await fetch(getUrl, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(putBody)
+      });
+
+      if (putResponse.ok) {
+        alert("Data berhasil disimpan ke GitHub!");
+      } else {
+        alert("Gagal menyimpan data.");
+      }
+    }
+  </script>
+</body>
+</html>

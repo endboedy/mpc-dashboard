@@ -1,13 +1,1 @@
-
-[
-  {
-    "equipment": "XCE0001",
-    "model": 320,
-    "pit": "SITARUM",
-    "activity": "Track Type",
-    "description": "XCE0001 Sch PM 250 Hrs - SMU 1000 Hrs",
-    "lash_type_pm": 250,
-    "smu_lash_pm": 750,
-    "curr": 900
-  }
-]
+[]
