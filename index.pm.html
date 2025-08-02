@@ -3,174 +3,104 @@
 <html>
 <head>
   <title>MPC Dashboard</title>
-  <style>
-    body { font-family: Arial; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    input, button { margin: 5px; }
-  </style>
 </head>
 <body>
-  <h2>MPC Dashboard</h2>
+  <h1>MPC Dashboard</h1>
+  <h3>MPC Dashboard</h3>
   <p>User: ndarboe.net</p>
 
-  <h3>Add Equipment</h3>
-  <input type="text" id="equipment" placeholder="Equipment">
-  <input type="text" id="model" placeholder="Model">
-  <input type="text" id="pit" placeholder="PIT">
-  <input type="text" id="activity" placeholder="Activity">
-  <input type="text" id="description" placeholder="Description">
-  <input type="number" id="lash_type_pm" placeholder="Lash Type PM">
-  <input type="number" id="smu_lash_pm" placeholder="SMU Lash PM">
-  <input type="number" id="curr" placeholder="Curr">
-  <button onclick="addEquipment()">Add</button>
+  <h4>Add Equipment</h4>
 
-  <h3>Equipment List</h3>
-  <table id="equipment-table">
-    <thead>
-      <tr>
-        <th>Equipment</th>
-        <th>Model</th>
-        <th>PIT</th>
-        <th>Activity</th>
-        <th>Description</th>
-        <th>Lash Type PM</th>
-        <th>SMU Lash PM</th>
-        <th>Curr</th>
-        <th>Next</th>
-        <th>Dev</th>
-        <th>Plan Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
+  <form id="equipmentForm" onsubmit="saveToGitHub(event)">
+    <label>Equipment: <input type="text" id="equipment" required></label><br>
+    <label>Model: <input type="text" id="model" required></label><br>
+    <label>PIT: <input type="text" id="pit" required></label><br>
+    <label>Activity: <input type="text" id="activity" required></label><br>
+    <label>Description: <input type="text" id="description" required></label><br>
+    <label>Lash Type PM: <input type="text" id="lashTypePM" required></label><br>
+    <label>SMU Lash PM: <input type="text" id="smuLashPM" required></label><br>
+    <label>Curr: <input type="text" id="curr" required></label><br>
+    <label>Next: <input type="text" id="next" required></label><br>
+    <label>Dev: <input type="text" id="dev" required></label><br>
+    <label>Plan Date: <input type="date" id="planDate" required></label><br>
+    <button type="submit">Simpan</button>
+  </form>
+
+  <h4>Equipment List</h4>
+  <table>
+    <tr>
+      <th>Equipment</th>
+      <th>Model</th>
+      <th>PIT</th>
+      <th>Activity</th>
+      <th>Description</th>
+      <th>Lash Type PM</th>
+      <th>SMU Lash PM</th>
+      <th>Curr</th>
+      <th>Next</th>
+      <th>Dev</th>
+      <th>Plan Date</th>
+      <th>Actions</th>
+    </tr>
   </table>
 
   <script>
-    const githubToken = "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";
-    const repoOwner = "endoeedy";
-    const repoName = "mpc-dashboard";
-    const filePath = "data.json";
+    async function saveToGitHub(event) {
+      event.preventDefault();
 
-    let equipmentData = [];
+      const githubToken = prompt("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");
+      const repoOwner = "endoeedy";
+      const repoName = "mpc-dashboard";
+      const filePath = "data.json";
 
-    function calculateNext(smu_lash_pm) {
-      return smu_lash_pm + 250;
-    }
-
-    function calculateDev(curr, next) {
-      return curr - next;
-    }
-
-    function calculatePlanDate(curr, next) {
-      const now = new Date();
-      const offsetDays = (curr - next) / 15;
-      now.setDate(now.getDate() + offsetDays);
-      const day = String(now.getDate()).padStart(2, '0');
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const month = monthNames[now.getMonth()];
-      const year = now.getFullYear();
-      return `${day}-${month}-${year}`;
-    }
-
-    function renderTable() {
-      const tbody = document.querySelector("#equipment-table tbody");
-      tbody.innerHTML = "";
-      equipmentData.forEach((item, index) => {
-        const next = calculateNext(item.smu_lash_pm);
-        const dev = calculateDev(item.curr, next);
-        const plan_date = calculatePlanDate(item.curr, next);
-        tbody.innerHTML += `
-          <tr>
-            <td>${item.equipment}</td>
-            <td>${item.model}</td>
-            <td>${item.pit}</td>
-            <td>${item.activity}</td>
-            <td>${item.description}</td>
-            <td>${item.lash_type_pm}</td>
-            <td>${item.smu_lash_pm}</td>
-            <td>${item.curr}</td>
-            <td>${next}</td>
-            <td>${dev.toFixed(2)}</td>
-            <td>${plan_date}</td>
-            <td>
-              <button onclick="editEquipment(${index})">Edit</button>
-              <button onclick="deleteEquipment(${index})">Delete</button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function addEquipment() {
-      const item = {
+      const data = {
         equipment: document.getElementById("equipment").value,
         model: document.getElementById("model").value,
         pit: document.getElementById("pit").value,
         activity: document.getElementById("activity").value,
         description: document.getElementById("description").value,
-        lash_type_pm: parseInt(document.getElementById("lash_type_pm").value),
-        smu_lash_pm: parseFloat(document.getElementById("smu_lash_pm").value),
-        curr: parseFloat(document.getElementById("curr").value)
+        lashTypePM: document.getElementById("lashTypePM").value,
+        smuLashPM: document.getElementById("smuLashPM").value,
+        curr: document.getElementById("curr").value,
+        next: document.getElementById("next").value,
+        dev: document.getElementById("dev").value,
+        planDate: document.getElementById("planDate").value
       };
-      equipmentData.push(item);
-      renderTable();
-      saveToGitHub();
-    }
 
-    function editEquipment(index) {
-      const item = equipmentData[index];
-      const newEquipment = prompt("Edit Equipment:", item.equipment);
-      if (newEquipment !== null) {
-        item.equipment = newEquipment;
-        renderTable();
-        saveToGitHub();
+      const headers = {
+        "Authorization": `token ${githubToken}`,
+        "Accept": "application/vnd.github.v3+json"
+      };
+
+      const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+      const getResponse = await fetch(getUrl, { headers });
+      const getResult = await getResponse.json();
+
+      let existingData = [];
+      if (getResult.content) {
+        const content = atob(getResult.content);
+        existingData = JSON.parse(content);
       }
-    }
 
-    function deleteEquipment(index) {
-      if (confirm("Delete this equipment?")) {
-        equipmentData.splice(index, 1);
-        renderTable();
-        saveToGitHub();
-      }
-    }
+      existingData.push(data);
+      const updatedContent = btoa(JSON.stringify(existingData, null, 2));
 
-    async function saveToGitHub() {
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(equipmentData, null, 2))));
-      const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+      const putBody = {
+        message: "Update data.json",
+        content: updatedContent,
+        sha: getResult.sha
+      };
 
-      try {
-        const getRes = await fetch(url, {
-          headers: {
-            Authorization: `token ${githubToken}`
-          }
-        });
-        const getData = await getRes.json();
-        const sha = getData.sha;
+      const putResponse = await fetch(getUrl, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(putBody)
+      });
 
-        const res = await fetch(url, {
-          method: "PUT",
-          headers: {
-            Authorization: `token ${githubToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: "Update data.json from MPC Dashboard",
-            content: content,
-            sha: sha
-          })
-        });
-
-        if (res.ok) {
-          console.log("✅ Data berhasil disimpan ke GitHub.");
-        } else {
-          console.error("❌ Gagal menyimpan data ke GitHub.", await res.text());
-        }
-      } catch (error) {
-        console.error("❌ Error saat menyimpan ke GitHub:", error);
+      if (putResponse.ok) {
+        alert("Data berhasil disimpan ke GitHub!");
+      } else {
+        alert("Gagal menyimpan data.");
       }
     }
   </script>
