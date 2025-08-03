@@ -43,6 +43,14 @@ window.toggleSidebar = function () {
   document.getElementById("sidebar").classList.toggle("collapsed");
 };
 
+// Format tanggal ke dd-mmm-yyyy
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const options = { day: '2-digit', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+}
+
 // Submit form (Create & Update)
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("addForm").addEventListener("submit", async function (e) {
@@ -55,12 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
     data.NextPM = parseInt(data.LastPMSMU || 0) + 250;
     data.DevHrs = parseInt(data.CurrentSMU || 0) - data.NextPM;
 
-    const daysToPlan = (data.NextPM - data.CurrentSMU) / 15;    
+    const daysToPlan = (data.NextPM - data.CurrentSMU) / 15;
     const planDate = new Date();
     planDate.setDate(planDate.getDate() + daysToPlan);
-    const options = { day: '2-digit', month: 'short', year: 'numeric' };
-    data.PlanDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+    data.PlanDate = formatDate(planDate);
 
+    // Format LastPMDate
+    data.LastPMDate = formatDate(data.LastPMDate);
 
     const id = form.getAttribute("data-id");
     const dbRef = ref(database, id ? `equipment/${id}` : "equipment");
@@ -83,6 +92,17 @@ document.addEventListener("DOMContentLoaded", () => {
   loadData(); // Load data saat halaman siap
 });
 
+// Filter data
+function applyFilters(data) {
+  const equipmentFilter = document.getElementById("filterEquipment")?.value.toLowerCase() || "";
+  const pitFilter = document.getElementById("filterPIT")?.value.toLowerCase() || "";
+  const activityFilter = document.getElementById("filterActivity")?.value.toLowerCase() || "";
+
+  return (!equipmentFilter || data.Equipment?.toLowerCase().includes(equipmentFilter)) &&
+         (!pitFilter || data.PIT?.toLowerCase().includes(pitFilter)) &&
+         (!activityFilter || data.Activity?.toLowerCase().includes(activityFilter));
+}
+
 // Load data dari Firebase
 function loadData() {
   const tbody = document.getElementById("data-table");
@@ -93,6 +113,9 @@ function loadData() {
     snapshot.forEach((child) => {
       const data = child.val();
       const id = child.key;
+
+      if (!applyFilters(data)) return;
+
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${data.Equipment || ""}</td>
@@ -144,4 +167,3 @@ window.deleteData = function (id) {
     });
   }
 };
-
