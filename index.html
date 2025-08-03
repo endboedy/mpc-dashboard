@@ -5,193 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MPC_Dashboard</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background-color: #d0e4f0;
-    }
-
-    header {
-      background-color: #0a2940;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-      font-weight: bold;
-    }
-
-    header h1 span {
-      color: #60c5ff;
-    }
-
-    header .right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    header .right img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-
-    #container {
-      display: flex;
-    }
-
-    aside {
-      background-color: #4890cb;
-      width: 180px;
-      min-width: 150px;
-      transition: width 0.3s ease;
-      color: white;
-      height: calc(100vh - 60px);
-    }
-
-    aside.collapsed {
-      width: 40px;
-    }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .sidebar-menu {
-      padding-left: 10px;
-    }
-
-    .sidebar-menu a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 5px 0;
-      font-weight: bold;
-    }
-
-    .sidebar-menu a.active {
-      text-decoration: underline;
-    }
-
-    .main {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    .filter-section {
-      margin-bottom: 10px;
-    }
-
-    .filter-section input {
-      margin-right: 15px;
-      padding: 5px;
-    }
-
-    button {
-      padding: 6px 10px;
-      margin-right: 10px;
-      background-color: #0a2940;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    th, td {
-      padding: 8px;
-      border: 1px solid #b0c4de;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    th {
-      background-color: #0a2940;
-      color: white;
-    }
-
-    .action-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 5% auto;
-      padding: 20px;
-      width: 90%;
-      max-width: 800px;
-      border-radius: 10px;
-    }
-
-    .modal h3 {
-      margin-top: 0;
-      font-size: 20px;
-      color: #0a2940;
-    }
-
-    .modal form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .modal label {
-      font-weight: bold;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 5px;
-    }
-
-    .modal-actions {
-      grid-column: span 2;
-      text-align: right;
-      margin-top: 10px;
-    }
-
-    .modal button {
-      margin-left: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header>
-  <h1>MPC_<span>Dashboard</span></h1>
+  <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
   <div class="right">
     https://www.svgrepo.com/show/14464/user.svg
     <span>ndarboe.net</span>
@@ -215,33 +34,19 @@
 
     <div class="filter-section">
       Equipment: <input type="text" />
-      PIT: <input type="text" />
-      Activity: <input type="text" />
+     : <input type="text" />
       <button onclick="openModal()">Add New</button>
     </div>
 
     <table>
       <thead>
         <tr>
-          <th>Equipment</th>
-          <th>Model</th>
-          <th>PIT</th>
-          <th>Activity</th>
-          <th>Description</th>
-          <th>Lash Type PM</th>
-          <th>Last PM SMU</th>
-          <th>Current SMU</th>
-          <th>Last PM Date</th>
-          <th>Next PM</th>
-          <th>Next Type PM</th>
-          <th>Dev (Hrs)</th>
-          <th>Plan Date</th>
-          <th>Action</th>
+          <th>Equipment</th><th>Model</th><th>PIT</th><th>Activity</th><th>Description</th>
+          <th>Lash Type PM</th><th>Last PM SMU</th><th>Current SMU</th><th>Last PM Date</th>
+          <th>Next PM</th><th>Next Type PM</th><th>Dev (Hrs)</th><th>Plan Date</th><th>Action</th>
         </tr>
       </thead>
-      <tbody id="data-table">
-        <!-- Rows will go here -->
-      </tbody>
+      <tbody id="data-table"></tbody>
     </table>
   </div>
 </div>
