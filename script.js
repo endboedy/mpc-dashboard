@@ -55,10 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
     data.NextPM = parseInt(data.LastPMSMU || 0) + 250;
     data.DevHrs = parseInt(data.CurrentSMU || 0) - data.NextPM;
 
-    const daysToPlan = (data.NextPM - data.CurrentSMU) / 15;
+    const daysToPlan = (data.NextPM - data.CurrentSMU) / 15;    
     const planDate = new Date();
     planDate.setDate(planDate.getDate() + daysToPlan);
-    data.PlanDate = planDate.toISOString().split("T")[0];
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    data.PlanDate = planDate.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+
 
     const id = form.getAttribute("data-id");
     const dbRef = ref(database, id ? `equipment/${id}` : "equipment");
@@ -142,3 +144,4 @@ window.deleteData = function (id) {
     });
   }
 };
+
