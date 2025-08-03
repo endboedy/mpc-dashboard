@@ -8,99 +8,59 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header>
     <h1>MPC_Dashboard</h1>
-    <div class="right">User: <strong>ndarboe.net</strong></div>
+    <div class="user-info">ndariboo.net</div>
   </header>
-
   <div id="container">
     <aside id="sidebar">
       <div class="sidebar-header">
-        <span>Menu</span>
-        <button id="toggleSidebar">⮜</button>
+               <button id="toggleSidebar">&#x2B9C;</button>
       </div>
       <div class="sidebar-menu">
         <a href="#" class="active">PM Control</a>
         <a href="#">Update Current SMU</a>
       </div>
     </aside>
-
-   
-main class="main">
-  <div class="filter-section">
-    <select id="filterEquipment">
-      <option value="">All Equipment</option>
-    </select>
-    <select id="filterPIT">
-      <option value="">All PIT</option>
-    </select>
-    <select id="filterActivity">
-      <option value="">All Activity</option>
-    </select>
-    <button id="addBtn">Add New</button>
-  </div>
-
-
+    <main class="main">
+      <div class="filter-section">
+        <input id="filterEquipment" placeholder="Equipment">
+        <input id="filterPIT" placeholder="PIT">
+        <input id="filterActivity" placeholder="Activity">
+       button>
+      </div>
       <table>
         <thead>
           <tr>
-            <th>Equipment</th>
-            <th>Model</th>
-            <th>PIT</th>
-            <th>Activity</th>
-            <th>Description</th>
-            <th>Lash Type PM</th>
-            <th>Last PM SMU</th>
-            <th>Current SMU</th>
-            <th>Last PM Date</th>
-            <th>Next PM</th>
-            <th>Next Type PM</th>
-            <th>Dev (Hrs)</th>
-            <th>Plan Date</th>
-            <th>Action</th>
+            <th>Equipment</th><th>Model</th><th>PIT</th><th>Activity</th><th>Description</th>
+            <th>Lash Type PM</th><th>Last PM SMU</th><th>Current SMU</th><th>Last PM Date</th>
+            <th>Next PM</th><th>Next Type PM</th><th>Dev (Hrs)</th><th>Plan Date</th><th>Action</th>
           </tr>
         </thead>
-        <tbody id="dataTable">
-          <!-- Data rows here -->
-        </tbody>
+        <tbody id="dataTable"></tbody>
       </table>
     </main>
   </div>
 
-  <!-- Modal -->
-  <div class="modal" id="dataModal">
+  <div id="dataModal" class="modal">
     <div class="modal-content">
-      <h3>Add New Equipment</h3>
+      <h3>Add/Edit Equipment</h3>
       <form id="dataForm">
-        <label>Equipment</label>
-        <input type="text" name="equipment">
-        <label>Model</label>
-        <input type="text" name="model">
-        <label>PIT</label>
-        <input type="text" name="pit">
-        <label>Activity</label>
-        <input type="text" name="activity">
-        <label>Description</label>
-        <input type="text" name="description">
-        <label>Lash Type PM</label>
-        <input type="text" name="lashType">
-        <label>Last PM SMU</label>
-        <input type="text" name="lastPMSMU">
-        <label>Current SMU</label>
-        <input type="text" name="currentSMU">
-        <label>Last PM Date</label>
-        <input type="date" name="lastPMDate">
-        <label>Next PM</label>
-        <input type="text" name="nextPM">
-        <label>Next Type PM</label>
-        <input type="text" name="nextTypePM">
-        <label>Dev (Hrs)</label>
-        <input type="text" name="devHrs">
-        <label>Plan Date</label>
-        <input type="date" name="planDate">
+        <label>Equipment</label><input name="equipment" type="text">
+        <label>Model</label><input name="model" type="text">
+        <label>PIT</label><input name="pit" type="text">
+        <label>Activity</label><input name="activity" type="text">
+        <label>Description</label><input name="description" type="text">
+        <label>Lash Type PM</label><input name="lashType" type="text">
+        <label>Last PM SMU</label><input name="lastPMSMU" type="text">
+        <label>Current SMU</label><input name="currentSMU" type="text">
+        <label>Last PM Date</label><input name="lastPMDate" type="date">
+        <label>Next PM</label><input name="nextPM" type="text">
+        <label>Next Type PM</label><input name="nextTypePM" type="text">
+        <label>Dev (Hrs)</label><input name="devHrs" type="text">
+        <label>Plan Date</label><input name="planDate" type="date">
         <div class="modal-actions">
-          <button type="button" onclick="closeModal()">Cancel</button>
+          <button type="button" id="cancelBtn">Cancel</button>
           <button type="submit">Save</button>
         </div>
       </form>
