@@ -12,18 +12,22 @@
     <h1>MPC_Dashboard</h1>
     <div class="user-info">ndariboo.net</div>
   </header>
+
   <div id="container">
     <aside id="sidebar">
-      <div class        <a href="#">Update Current SMU</a>
+      <div class="menu">
+        <a href="#">Update Current SMU</a>
       </div>
     </aside>
+
     <main class="main">
       <div class="filter-section">
         <select id="filterEquipment"><option value="">All Equipment</option></select>
         <select id="filterPIT"><option value="">All PIT</option></select>
         <select id="filterActivity"><option value="">All Activity</option></select>
-        <button id="addBtn">Add New</button>
+       button>
       </div>
+
       <table>
         <thead>
           <tr>
@@ -41,15 +45,15 @@
     <div class="modal-content">
       <h3>Add/Edit Equipment</h3>
       <form id="dataForm">
-        <label>Equipment</label><input name="equipment" type="text">
-        <label>Model</label><input name="model" type="text">
-        <label>PIT</label><input name="pit" type="text">
-        <label>Activity</label><input name="activity" type="text">
-        <label>Lash Type PM</label><input name="lashType" type="number">
-        <label>Last PM SMU</label><input name="lastPMSMU" type="number">
-        <label>Current SMU</label><input name="currentSMU" type="number">
-        <label>Last PM Date</label><input name="lastPMDate" type="date">
-        <label>Next Type PM</label><input name="nextTypePM" type="number">
+        <label>Equipment</label><input name="equipment" type="text" required>
+        <label>Model</label><input name="model" type="text" required>
+        <label>PIT</label><input name="pit" type="text" required>
+        <label>Activity</label><input name="activity" type="text" required>
+        <label>Lash Type PM</label><input name="lashType" type="number" required>
+        <label>Last PM SMU</label><input name="lastPMSMU" type="number" required>
+        <label>Current SMU</label><input name="currentSMU" type="number" required>
+        <label>Last PM Date</label><input name="lastPMDate" type="date" required>
+        <label>Next Type PM</label><input name="nextTypePM" type="number" required>
         <div class="modal-actions">
           <button type="button" id="cancelBtn">Cancel</button>
           <button type="submit">Save</button>
