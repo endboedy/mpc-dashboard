@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +29,10 @@
       margin: 0;
       font-size: 32px;
       font-weight: bold;
+    }
+
+    header h1 span {
+      color: #60c5ff;
     }
 
     header .right {
@@ -81,7 +86,6 @@
     }
 
     .sidebar-menu a.active {
-      font-weight: bold;
       text-decoration: underline;
     }
 
@@ -187,9 +191,9 @@
 <body>
 
 <header>
-  <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
+  <h1>MPC_<span>Dashboard</span></h1>
   <div class="right">
-    <img src="https://www.svgrepo.com/show/14464/user.svg" alt="User">
+    https://www.svgrepo.com/show/14464/user.svg
     <span>ndarboe.net</span>
   </div>
 </header>
@@ -207,7 +211,7 @@
   </aside>
 
   <div class="main">
-    <h2>pm_control</h2>
+    <h2>PM Control</h2>
 
     <div class="filter-section">
       Equipment: <input type="text" />
@@ -251,16 +255,11 @@
       <input placeholder="Model" name="Model" required>
       <input placeholder="PIT" name="PIT" required>
       <input placeholder="Activity" name="Activity" required>
-      <input placeholder="Description" name="Description">
-      <input placeholder="Lash Type PM" name="LashTypePM">
+      <input placeholder="Lash Type PM" name="LashTypePM" type="number">
       <input placeholder="Last PM SMU" name="LastPMSMU" type="number">
       <input placeholder="Current SMU" name="CurrentSMU" type="number">
       <input placeholder="Last PM Date" name="LastPMDate" type="date">
-      <input placeholder="Next PM" name="NextPM" type="number">
       <input placeholder="Next Type PM" name="NextTypePM">
-      <input placeholder="Dev (Hrs)" name="DevHrs" type="number">
-      <input placeholder="Plan Date" name="PlanDate" type="date">
-
       <div class="modal-actions">
         <button type="button" onclick="closeModal()">Cancel</button>
         <button type="submit">Save</button>
@@ -269,50 +268,6 @@
   </div>
 </div>
 
-<script>
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-  }
-
-  function openModal() {
-    document.getElementById('dataModal').style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('dataModal').style.display = 'none';
-  }
-
-  document.getElementById('addForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const data = Object.fromEntries(new FormData(form));
-    
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${data.Equipment}</td>
-      <td>${data.Model}</td>
-      <td>${data.PIT}</td>
-      <td>${data.Activity}</td>
-      <td>${data.Description}</td>
-      <td>${data.LashTypePM}</td>
-      <td>${data.LastPMSMU}</td>
-      <td>${data.CurrentSMU}</td>
-      <td>${data.LastPMDate}</td>
-      <td>${data.NextPM}</td>
-      <td>${data.NextTypePM}</td>
-      <td>${data.DevHrs}</td>
-      <td>${data.PlanDate}</td>
-      <td class="action-buttons">
-        <button>Edit</button>
-        <button>Delete</button>
-      </td>
-    `;
-    document.getElementById('data-table').appendChild(row);
-    form.reset();
-    closeModal();
-  });
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
