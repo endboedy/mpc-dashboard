@@ -12,8 +12,7 @@
 <header>
   <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
   <div class="right">
-    https://www.svgrepo.com/show/14464/user.svg
-    <span>ndarboe.net</span>
+    <img src="https://www.svgrepo.com/show/14464/user.svg" alt="e.net</span>
   </div>
 </header>
 
@@ -32,11 +31,12 @@
   <div class="main">
     <h2>PM Control</h2>
 
-    <div class="filter-section">
-      Equipment: <input type="text" name="filterEquipment" />
-      PIT: <input type="text" name="filterPIT" />
-      Activity: <input type="text" id="filterActivity" />
+    <div id="filterContainer" class="filter-section">
+      Equipment: <input type="text" id="filterEquipment" name="filterEquipment" />
+      PIT: <input type="text" id="filterPIT" name="filterPIT" />
+      Activity: <input type="text" id="filterActivity" name="filterActivity" />
       <button onclick="openModal()">Add New</button>
+      <button id="filterButton">Aktifkan Filter</button>
     </div>
 
     <table>
@@ -75,27 +75,14 @@
 </div>
 
 <script type="module" src="script.js"></script>
-  // Tambahkan tombol Aktifkan Filter
-const filterButton = document.createElement("button");
-filterButton.textContent = "Aktifkan Filter";
-filterButton.style.margin = "10px";
-filterButton.onclick = function () {
-  loadData(); // Trigger filter saat tombol diklik
-};
-
-// Sisipkan tombol ke dalam DOM (misalnya di atas tabel)
-document.addEventListener("DOMContentLoaded", () => {
-  const filterContainer = document.getElementById("filterContainer") || document.body;
-  filterContainer.appendChild(filterButton);
-});
-
-// Hapus event listener otomatis dari input filter
-// (Pastikan ini tidak ada di script utama jika ingin hanya tombol yang aktifkan filter)
-// document.getElementById("filterEquipment").addEventListener("input", loadData);
-// document.getElementById("filterPIT").addEventListener("input", loadData);
-// document.getElementById("filterActivity").addEventListener("input", loadData);
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterButton = document.getElementById("filterButton");
+    filterButton.addEventListener("click", () => {
+      loadData(); // Trigger filter saat tombol diklik
+    });
+  });
+</script>
 
 </body>
 </html>
-
-
