@@ -84,12 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
       form.removeAttribute("data-id");
       form.reset();
       closeModal();
+      // ⛔ Tidak perlu panggil loadData() di sini
     } catch (error) {
       console.error("Gagal menyimpan data:", error);
     }
   });
 
-  loadData(); // Load data saat halaman siap
+  loadData(); // Listener aktif saat halaman siap
 });
 
 // Filter data
@@ -106,10 +107,10 @@ function applyFilters(data) {
 // Load data dari Firebase
 function loadData() {
   const tbody = document.getElementById("data-table");
-  tbody.innerHTML = "";
-
   const dbRef = ref(database, "equipment");
+
   onValue(dbRef, (snapshot) => {
+    tbody.innerHTML = ""; // Reset isi tabel setiap kali data berubah
     snapshot.forEach((child) => {
       const data = child.val();
       const id = child.key;
