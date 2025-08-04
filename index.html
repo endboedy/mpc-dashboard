@@ -75,6 +75,27 @@
 </div>
 
 <script type="module" src="script.js"></script>
+  // Tambahkan tombol Aktifkan Filter
+const filterButton = document.createElement("button");
+filterButton.textContent = "Aktifkan Filter";
+filterButton.style.margin = "10px";
+filterButton.onclick = function () {
+  loadData(); // Trigger filter saat tombol diklik
+};
+
+// Sisipkan tombol ke dalam DOM (misalnya di atas tabel)
+document.addEventListener("DOMContentLoaded", () => {
+  const filterContainer = document.getElementById("filterContainer") || document.body;
+  filterContainer.appendChild(filterButton);
+});
+
+// Hapus event listener otomatis dari input filter
+// (Pastikan ini tidak ada di script utama jika ingin hanya tombol yang aktifkan filter)
+// document.getElementById("filterEquipment").addEventListener("input", loadData);
+// document.getElementById("filterPIT").addEventListener("input", loadData);
+// document.getElementById("filterActivity").addEventListener("input", loadData);
+
 </body>
 </html>
+
 
