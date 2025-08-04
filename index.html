@@ -1,113 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PM Service Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MPC_Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <aside>
+
+<header>
+  <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
+  <div class="right">
+    <img src="https://www.svgrepo.com/show/14464/user.svg" alt="User" width="24" />
+    <span>ndarboe.net</span>
+  </div>
+</header>
+
+<div id="container">
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button onclick="toggleSidebar()">⮜</button>
+    </div>
     <div class="sidebar-menu">
-      <ul>
-        <li>🏠 Home</li>
-        <li>🛠️ PM Control
-          <ul>
-            <li><a href="#" onclick="showSection('content-daily-pm')">Daily PM</a></li>
-            <li><a href="#" onclick="showSection('content-update-smu')">Update Current SMU</a></li>
+      <ul class="menu">
+        <li onclick="loadContent('home')">🏠 Home</li>
+
+        <li>
+          🛠️ PM Control
+          <ul class="submenu">
+            <li onclick="loadContent('daily-pm')">Daily PM</li>
+            <li onclick="loadContent('update-smu')">Update Current SMU</li>
           </ul>
         </li>
-        <li>📂 Work Order
-          <ul>
-            <li>📤 Upload File [excel]
-              <ul>
-                <li><a href="#">IW39</a></li>
-                <li><a href="#">Summary</a></li>
-                <li><a href="#">Detail</a></li>
-                <li><a href="#">External Job</a></li>
+
+        <li>
+          📂 Work Order
+          <ul class="submenu">
+            <li>
+              📤 Upload File [excel]
+              <ul class="sub-submenu">
+                <li onclick="loadContent('upload-iw39')">IW39</li>
+                <li onclick="loadContent('upload-summary')">Summary</li>
+                <li onclick="loadContent('upload-detail')">Detail</li>
+                <li onclick="loadContent('upload-external')">External Job</li>
               </ul>
             </li>
-            <li>📅 Monthly Plant
-              <ul>
-                <li><a href="#">Commingson</a></li>
+            <li>
+              📅 Monthly Plant
+              <ul class="sub-submenu">
+                <li onclick="loadContent('commingson')">Commingson</li>
               </ul>
             </li>
-            <li>🔍 Search Part Number
-              <ul>
-                <li><a href="#">Upload File [excel]</a></li>
-                <li><a href="#">Search PN</a></li>
-                <li><a href="#">Check Stock</a></li>
+            <li>
+              🔍 Search Part Number
+              <ul class="sub-submenu">
+                <li onclick="loadContent('upload-pn')">Upload File [excel]</li>
+                <li onclick="loadContent('search-pn')">Search PN</li>
+                <li onclick="loadContent('check-stock')">Check Stock</li>
               </ul>
             </li>
           </ul>
         </li>
-        <li>⏳ Life Time
-          <ul>
-            <li><a href="#">Component Life</a></li>
-            <li><a href="#">Tyre Life</a></li>
-            <li><a href="#">UCR Life</a></li>
-            <li><a href="#">GET Life</a></li>
-            <li><a href="#">SOS Life</a></li>
+
+        <li>
+          ⏳ Life Time
+          <ul class="submenu">
+            <li onclick="loadContent('component-life')">Component Life</li>
+            <li onclick="loadContent('tyre-life')">Tyre Life</li>
+            <li onclick="loadContent('ucr-life')">UCR Life</li>
+            <li onclick="loadContent('get-life')">GET Life</li>
+            <li onclick="loadContent('sos-life')">SOS Life</li>
           </ul>
         </li>
       </ul>
     </div>
   </aside>
 
-  <main>
-    <!-- Daily PM Section -->
-    <div id="content-daily-pm" class="content-section">
-      <h2>Daily PM</h2>
-      <button onclick="openModal()">+ Add PM</button>
-      <table id="pmTable">
-        <thead>
-          <tr>
-            <th>Equipment</th>
-            <th>PIT</th>
-            <th>Activity</th>
-            <th>Last PM</th>
-            <th>SMU</th>
-            <th>Interval</th>
-            <th>Next PM</th>
-            <th>Current SMU</th>
-            <th>DevHrs</th>
-            <th>PlanDate</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="pmTableBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Update SMU Section -->
-    <div id="content-update-smu" class="content-section" style="display: none;">
-      <h2>Update Current SMU</h2>
-      <p>Konten masih kosong bro.</p>
-    </div>
-  </main>
-
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Add/Edit PM</h3>
-      <form id="pmForm">
-        <input type="hidden" id="pmKey">
-        <input type="text" id="equipment" placeholder="Equipment" required>
-        <input type="text" id="pit" placeholder="PIT" required>
-        <input type="text" id="activity" placeholder="Activity" required>
-        <input type="number" id="lastPM" placeholder="Last PM SMU" required>
-        <input type="number" id="smu" placeholder="Current SMU" required>
-        <input type="number" id="interval" placeholder="Interval" required>
-        <div class="modal-actions">
-          <button type="submit">Save</button>
-          <button type="button" onclick="closeModal()">Cancel</button>
-        </div>
-      </form>
-    </div>
+  <!-- Main Content -->
+  <div class="main" id="main-content">
+    <h2>Welcome to MPC Dashboard</h2>
+    <p>Select a menu on the left to begin.</p>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<!-- Modal -->
+<div class="modal" id="dataModal">
+  <div class="modal-content">
+    <h3>Add New Equipment</h3>
+    <form id="addForm">
+      <input placeholder="Equipment" name="Equipment" required>
+      <input placeholder="Model" name="Model" required>
+      <input placeholder="PIT" name="PIT" required>
+      <input placeholder="Activity" name="Activity" required>
+      <input placeholder="Lash Type PM" name="LashTypePM" type="number">
+      <input placeholder="Last PM SMU" name="LastPMSMU" type="number">
+      <input placeholder="Current SMU" name="CurrentSMU" type="number">
+      <input placeholder="Last PM Date" name="LastPMDate" type="date">
+      <input placeholder="Next Type PM" name="NextTypePM">
+      <div class="modal-actions">
+        <button type="button" onclick="closeModal()">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+<script>
+  function loadContent(id) {
+    const main = document.getElementById("main-content");
+    main.innerHTML = `<h2>${id.replace(/-/g, ' ').toUpperCase()}</h2><p>[Content here coming soon...]</p>`;
+  }
+
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("collapsed");
+  }
+
+  function closeModal() {
+    document.getElementById("dataModal").style.display = "none";
+  }
+
+  function openModal() {
+    document.getElementById("dataModal").style.display = "block";
+  }
+</script>
+
 </body>
 </html>
