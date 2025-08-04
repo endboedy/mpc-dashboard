@@ -1,158 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MPC_Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Tambahan dasar supaya menu bertingkat terlihat */
-    .sidebar-menu ul {
-      list-style: none;
-      padding-left: 15px;
-    }
-
-    .sidebar-menu li {
-      margin: 5px 0;
-      cursor: pointer;
-    }
-
-    .sidebar-menu li ul {
-      display: none;
-    }
-
-    .sidebar-menu li:hover > ul {
-      display: block;
-    }
-
-    .sidebar-menu li a {
-      color: inherit;
-      text-decoration: none;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM Service Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-
-<header>
-  <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
-  <div class="right">
-    <img src="https://www.svgrepo.com/show/14464/user.svg" width="20" />
-    <span>ndarboe.net</span>
-  </div>
-</header>
-
-<div id="container">
-  <aside id="sidebar">
-    <div class="sidebar-header">
-      <span>Menu</span>
-      <button onclick="toggleSidebar()">⮜</button>
-    </div>
-
+  <aside>
     <div class="sidebar-menu">
-  <ul>
-    <li>🏠 <a href="#home" style="font-weight: bold;">Home</a></li>
-
-    <li>🛠️ PM Control
       <ul>
-        <li><a href="#daily-pm">Daily PM</a></li>
-        <li><a href="#update-smu">Update Current SMU</a></li>
-      </ul>
-    </li>
-
-    <li>📂 Work Order
-      <ul>
-        <li>📤 Upload File [excel]
+        <li>🏠 Home</li>
+        <li>🛠️ PM Control
           <ul>
-            <li><a href="#iw39">IW39</a></li>
-            <li><a href="#summary">Summary</a></li>
-            <li><a href="#detail">Detail</a></li>
-            <li><a href="#external-job">External Job</a></li>
+            <li><a href="#" onclick="showSection('content-daily-pm')">Daily PM</a></li>
+            <li><a href="#" onclick="showSection('content-update-smu')">Update Current SMU</a></li>
           </ul>
         </li>
-        <li>📅 Monthly Plant
+        <li>📂 Work Order
           <ul>
-            <li><a href="#commingson">Commingson</a></li>
+            <li>📤 Upload File [excel]
+              <ul>
+                <li><a href="#">IW39</a></li>
+                <li><a href="#">Summary</a></li>
+                <li><a href="#">Detail</a></li>
+                <li><a href="#">External Job</a></li>
+              </ul>
+            </li>
+            <li>📅 Monthly Plant
+              <ul>
+                <li><a href="#">Commingson</a></li>
+              </ul>
+            </li>
+            <li>🔍 Search Part Number
+              <ul>
+                <li><a href="#">Upload File [excel]</a></li>
+                <li><a href="#">Search PN</a></li>
+                <li><a href="#">Check Stock</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
-        <li>🔍 Search Part Number
+        <li>⏳ Life Time
           <ul>
-            <li><a href="#upload-pn">Upload File [excel]</a></li>
-            <li><a href="#search-pn">Search PN</a></li>
-            <li><a href="#check-stock">Check Stock</a></li>
+            <li><a href="#">Component Life</a></li>
+            <li><a href="#">Tyre Life</a></li>
+            <li><a href="#">UCR Life</a></li>
+            <li><a href="#">GET Life</a></li>
+            <li><a href="#">SOS Life</a></li>
           </ul>
         </li>
       </ul>
-    </li>
+    </div>
+  </aside>
 
-    <li>⏳ Life Time
-      <ul>
-        <li><a href="#component-life">Component Life</a></li>
-        <li><a href="#tyre-life">Tyre Life</a></li>
-        <li><a href="#ucr-life">UCR Life</a></li>
-        <li><a href="#get-life">GET Life</a></li>
-        <li><a href="#sos-life">SOS Life</a></li>
-      </ul>
-    </li>
-  </ul>
-</div>
-
-  <div class="main">
+  <main>
+    <!-- Daily PM Section -->
     <div id="content-daily-pm" class="content-section">
-    <h2>PM Control</h2>
-
-    <div id="filterContainer" class="filter-section">
-      Equipment: <input type="text" id="filterEquipment" name="filterEquipment" />
-      PIT: <input type="text" id="filterPIT" name="filterPIT" />
-      Activity: <input type="text" id="filterActivity" name="filterActivity" />
-      <button onclick="openModal()">Add New</button>
-      <button id="filterButton">Aktifkan Filter</button>
+      <h2>Daily PM</h2>
+      <button onclick="openModal()">+ Add PM</button>
+      <table id="pmTable">
+        <thead>
+          <tr>
+            <th>Equipment</th>
+            <th>PIT</th>
+            <th>Activity</th>
+            <th>Last PM</th>
+            <th>SMU</th>
+            <th>Interval</th>
+            <th>Next PM</th>
+            <th>Current SMU</th>
+            <th>DevHrs</th>
+            <th>PlanDate</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="pmTableBody"></tbody>
+      </table>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Equipment</th><th>Model</th><th>PIT</th><th>Activity</th><th>Description</th>
-          <th>Lash Type PM</th><th>Last PM SMU</th><th>Current SMU</th><th>Last PM Date</th>
-          <th>Next PM</th><th>Next Type PM</th><th>Dev (Hrs)</th><th>Plan Date</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="data-table"></tbody>
-    </table>
+    <!-- Update SMU Section -->
+    <div id="content-update-smu" class="content-section" style="display: none;">
+      <h2>Update Current SMU</h2>
+      <p>Konten masih kosong bro.</p>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Add/Edit PM</h3>
+      <form id="pmForm">
+        <input type="hidden" id="pmKey">
+        <input type="text" id="equipment" placeholder="Equipment" required>
+        <input type="text" id="pit" placeholder="PIT" required>
+        <input type="text" id="activity" placeholder="Activity" required>
+        <input type="number" id="lastPM" placeholder="Last PM SMU" required>
+        <input type="number" id="smu" placeholder="Current SMU" required>
+        <input type="number" id="interval" placeholder="Interval" required>
+        <div class="modal-actions">
+          <button type="submit">Save</button>
+          <button type="button" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div class="modal" id="dataModal">
-  <div class="modal-content">
-    <h3>Add New Equipment</h3>
-    <form id="addForm">
-      <input placeholder="Equipment" name="Equipment" required>
-      <input placeholder="Model" name="Model" required>
-      <input placeholder="PIT" name="PIT" required>
-      <input placeholder="Activity" name="Activity" required>
-      <input placeholder="Lash Type PM" name="LashTypePM" type="number">
-      <input placeholder="Last PM SMU" name="LastPMSMU" type="number">
-      <input placeholder="Current SMU" name="CurrentSMU" type="number">
-      <input placeholder="Last PM Date" name="LastPMDate" type="date">
-      <input placeholder="Next Type PM" name="NextTypePM">
-      <div class="modal-actions">
-        <button type="button" onclick="closeModal()">Cancel</button>
-        <button type="submit">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script type="module" src="script.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const filterButton = document.getElementById("filterButton");
-    filterButton.addEventListener("click", () => {
-      loadData(); // Trigger filter saat tombol diklik
-    });
-  });
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
-
