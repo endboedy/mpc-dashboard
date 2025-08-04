@@ -99,9 +99,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Filter data
 function applyFilters(data) {
-  const equipmentFilter = document.getElementById("filterEquipment")?.value.toLowerCase() || "";
-  const pitFilter = document.getElementById("filterPIT")?.value.toLowerCase() || "";
-  const activityFilter = document.getElementById("filterActivity")?.value.toLowerCase() || "";
+  const equipmentFilter = document.getElementById("filterEquipment")?.value.trim().toLowerCase() || "";
+  const pitFilter = document.getElementById("filterPIT")?.value.trim().toLowerCase() || "";
+  const activityFilter = document.getElementById("filterActivity")?.value.trim().toLowerCase() || "";
 
   return (!equipmentFilter || data.Equipment?.toLowerCase().includes(equipmentFilter)) &&
          (!pitFilter || data.PIT?.toLowerCase().includes(pitFilter)) &&
@@ -198,4 +198,3 @@ window.deleteData = function (id) {
     });
   }
 };
-
