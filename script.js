@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = Object.fromEntries(new FormData(form));
 
     // Hitung otomatis
-    data.Description = `${data.Equipment} - ${data.LashTypePM}`;
+    data.Description = `${data.Equipment} Sch PM ${data.NextTypePM}`;
     data.NextPM = parseInt(data.LastPMSMU || 0) + 250;
     data.DevHrs = parseInt(data.CurrentSMU || 0) - data.NextPM;
 
@@ -198,3 +198,4 @@ window.deleteData = function (id) {
     });
   }
 };
+
