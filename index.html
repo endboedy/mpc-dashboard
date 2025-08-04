@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,77 +12,43 @@
 <header>
   <h1>MPC_<span style="color:#60c5ff;">Dashboard</span></h1>
   <div class="right">
-    <img src="https://www.svgrepo.com/show/14464/user.svg" alt="User" width="24" />
+    https://www.svgrepo.com/show/14464/user.svg
     <span>ndarboe.net</span>
   </div>
 </header>
 
 <div id="container">
-  <!-- Sidebar -->
   <aside id="sidebar">
     <div class="sidebar-header">
       <span>Menu</span>
       <button onclick="toggleSidebar()">⮜</button>
     </div>
     <div class="sidebar-menu">
-      <ul class="menu">
-        <li onclick="loadContent('home')">🏠 Home</li>
-
-        <li>
-          🛠️ PM Control
-          <ul class="submenu">
-            <li onclick="loadContent('daily-pm')">Daily PM</li>
-            <li onclick="loadContent('update-smu')">Update Current SMU</li>
-          </ul>
-        </li>
-
-        <li>
-          📂 Work Order
-          <ul class="submenu">
-            <li>
-              📤 Upload File [excel]
-              <ul class="sub-submenu">
-                <li onclick="loadContent('upload-iw39')">IW39</li>
-                <li onclick="loadContent('upload-summary')">Summary</li>
-                <li onclick="loadContent('upload-detail')">Detail</li>
-                <li onclick="loadContent('upload-external')">External Job</li>
-              </ul>
-            </li>
-            <li>
-              📅 Monthly Plant
-              <ul class="sub-submenu">
-                <li onclick="loadContent('commingson')">Commingson</li>
-              </ul>
-            </li>
-            <li>
-              🔍 Search Part Number
-              <ul class="sub-submenu">
-                <li onclick="loadContent('upload-pn')">Upload File [excel]</li>
-                <li onclick="loadContent('search-pn')">Search PN</li>
-                <li onclick="loadContent('check-stock')">Check Stock</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        <li>
-          ⏳ Life Time
-          <ul class="submenu">
-            <li onclick="loadContent('component-life')">Component Life</li>
-            <li onclick="loadContent('tyre-life')">Tyre Life</li>
-            <li onclick="loadContent('ucr-life')">UCR Life</li>
-            <li onclick="loadContent('get-life')">GET Life</li>
-            <li onclick="loadContent('sos-life')">SOS Life</li>
-          </ul>
-        </li>
-      </ul>
+      <Update Current SMU</a>
     </div>
   </aside>
 
-  <!-- Main Content -->
-  <div class="main" id="main-content">
-    <h2>Welcome to MPC Dashboard</h2>
-    <p>Select a menu on the left to begin.</p>
+  <div class="main">
+    <h2>PM Control</h2>
+
+    <div id="filterContainer" class="filter-section">
+      Equipment: <input type="text" id="filterEquipment" name="filterEquipment" />
+      PIT: <input type="text" id="filterPIT" name="filterPIT" />
+      Activity: <input type="text" id="filterActivity" name="filterActivity" />
+      <button onclick="openModal()">Add New</button>
+      <button id="filterButton">Aktifkan Filter</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Equipment</th><th>Model</th><th>PIT</th><th>Activity</th><th>Description</th>
+          <th>Lash Type PM</th><th>Last PM SMU</th><th>Current SMU</th><th>Last PM Date</th>
+          <th>Next PM</th><th>Next Type PM</th><th>Dev (Hrs)</th><th>Plan Date</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="data-table"></tbody>
+    </table>
   </div>
 </div>
 
@@ -109,22 +76,12 @@
 
 <script type="module" src="script.js"></script>
 <script>
-  function loadContent(id) {
-    const main = document.getElementById("main-content");
-    main.innerHTML = `<h2>${id.replace(/-/g, ' ').toUpperCase()}</h2><p>[Content here coming soon...]</p>`;
-  }
-
-  function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("collapsed");
-  }
-
-  function closeModal() {
-    document.getElementById("dataModal").style.display = "none";
-  }
-
-  function openModal() {
-    document.getElementById("dataModal").style.display = "block";
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterButton = document.getElementById("filterButton");
+    filterButton.addEventListener("click", () => {
+      loadData(); // Trigger filter saat tombol diklik
+    });
+  });
 </script>
 
 </body>
