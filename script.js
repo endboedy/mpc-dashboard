@@ -1,4 +1,3 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getDatabase,
@@ -39,6 +38,14 @@ window.closeModal = function () {
   document.getElementById("dataModal").style.display = "none";
 };
 
+// Tutup modal kalau klik di luar area
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("dataModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
 window.toggleSidebar = function () {
   document.getElementById("sidebar").classList.toggle("collapsed");
 };
@@ -58,17 +65,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = e.target;
     const data = Object.fromEntries(new FormData(form));
 
-    // Hitung otomatis
-    data.Description = `${data.Equipment} Sch PM ${data.NextTypePM}`;
-    data.NextPM = parseInt(data.LastPMSMU || 0) + 250;
-    data.DevHrs = parseInt(data.CurrentSMU || 0) - data.NextPM;
+    // Konversi ke angka & validasi
+    const lastPM = parseInt(data.LastPMSMU || 0);
+    const currentSMU = parseInt(data.CurrentSMU || 0);
 
-    const daysToPlan = (data.NextPM - data.CurrentSMU) / 15;
+    data.Description = `${data.Equipment} Sch PM ${data.NextTypePM}`;
+    data.NextPM = lastPM + 250;
+    data.DevHrs = currentSMU - data.NextPM;
+
+    // Perkiraan plan date
+    const daysToPlan = (data.NextPM - currentSMU) / 15;
     const planDate = new Date();
     planDate.setDate(planDate.getDate() + daysToPlan);
     data.PlanDate = formatDate(planDate);
 
-    // Format LastPMDate
     data.LastPMDate = formatDate(data.LastPMDate);
 
     const id = form.getAttribute("data-id");
@@ -76,9 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (id) {
-        await set(dbRef, data); // Update
+        await set(dbRef, data);
       } else {
-        const newRef = push(dbRef); // Create
+        const newRef = push(dbRef);
         await set(newRef, data);
       }
       form.removeAttribute("data-id");
@@ -89,13 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Tombol filter manual
   const filterButton = document.getElementById("filterButton");
   if (filterButton) {
     filterButton.addEventListener("click", loadData);
   }
 
-  loadData(); // Load awal
+  loadData();
 });
 
 // Filter data
@@ -122,11 +131,9 @@ function loadData() {
       const id = child.key;
 
       if (!applyFilters(data)) return;
-
       rows.push({ id, data });
     });
 
-    // Sort berdasarkan DevHrs dari terbesar ke terkecil
     rows.sort((a, b) => (b.data.DevHrs || 0) - (a.data.DevHrs || 0));
 
     tbody.innerHTML = "";
@@ -134,7 +141,6 @@ function loadData() {
     rows.forEach(({ id, data }) => {
       const row = document.createElement("tr");
 
-      // Warna berdasarkan DevHrs
       let devColor = "";
       let devFont = "";
 
@@ -155,7 +161,7 @@ function loadData() {
         <td>${data.PIT || ""}</td>
         <td>${data.Activity || ""}</td>
         <td>${data.Description || ""}</td>
-        <td>${data.LashTypePM || ""}</td>
+        <td>${data.LastTypePM || ""}</td>
         <td>${data.LastPMSMU || ""}</td>
         <td>${data.CurrentSMU || ""}</td>
         <td>${data.LastPMDate || ""}</td>
