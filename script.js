@@ -84,13 +84,17 @@ document.addEventListener("DOMContentLoaded", () => {
       form.removeAttribute("data-id");
       form.reset();
       closeModal();
-      // ⛔ Tidak perlu panggil loadData() di sini
     } catch (error) {
       console.error("Gagal menyimpan data:", error);
     }
   });
 
   loadData(); // Listener aktif saat halaman siap
+
+  // Tambahkan event listener untuk filter
+  document.getElementById("filterEquipment").addEventListener("input", loadData);
+  document.getElementById("filterPIT").addEventListener("input", loadData);
+  document.getElementById("filterActivity").addEventListener("input", loadData);
 });
 
 // Filter data
@@ -110,14 +114,40 @@ function loadData() {
   const dbRef = ref(database, "equipment");
 
   onValue(dbRef, (snapshot) => {
-    tbody.innerHTML = ""; // Reset isi tabel setiap kali data berubah
+    const rows = [];
+
     snapshot.forEach((child) => {
       const data = child.val();
       const id = child.key;
 
       if (!applyFilters(data)) return;
 
+      rows.push({ id, data });
+    });
+
+    // Sort berdasarkan DevHrs dari terbesar ke terkecil
+    rows.sort((a, b) => (b.data.DevHrs || 0) - (a.data.DevHrs || 0));
+
+    tbody.innerHTML = "";
+
+    rows.forEach(({ id, data }) => {
       const row = document.createElement("tr");
+
+      // Warna berdasarkan DevHrs
+      let devColor = "";
+      let devFont = "";
+
+      if (data.DevHrs > 25) {
+        devColor = "background-color: red;";
+        devFont = "color: white;";
+      } else if (data.DevHrs >= 0) {
+        devColor = "background-color: green;";
+        devFont = "color: white;";
+      } else if (data.DevHrs >= -25) {
+        devColor = "background-color: yellow;";
+        devFont = "color: black;";
+      }
+
       row.innerHTML = `
         <td>${data.Equipment || ""}</td>
         <td>${data.Model || ""}</td>
@@ -130,7 +160,7 @@ function loadData() {
         <td>${data.LastPMDate || ""}</td>
         <td>${data.NextPM || ""}</td>
         <td>${data.NextTypePM || ""}</td>
-        <td>${data.DevHrs || ""}</td>
+        <td style="${devColor} ${devFont}">${data.DevHrs || ""}</td>
         <td>${data.PlanDate || ""}</td>
         <td class="action-buttons">
           <button onclick="editData('${id}')">Edit</button>
