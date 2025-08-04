@@ -38,7 +38,7 @@ aside {
 }
 
 aside.collapsed {
-  width: 40px;
+  width: 50px;
 }
 
 .sidebar-header {
@@ -78,7 +78,9 @@ aside.collapsed {
 
 .filter-section input {
   margin-right: 15px;
-  padding: 5px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
@@ -91,10 +93,14 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background-color: #003366;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 th, td {
@@ -105,7 +111,7 @@ th, td {
 }
 
 th {
-  background-color: #003366; /* Biru tua */
+  background-color: #1E3A8A; /* Biru navy */
   color: white;
   font-weight: bold;
 }
@@ -113,6 +119,10 @@ th {
 td {
   font-size: 12px;
   padding: 4px 8px;
+}
+
+tr:hover {
+  background-color: #e0f0ff;
 }
 
 .action-buttons button {
@@ -170,10 +180,6 @@ td {
 
 .modal button {
   margin-left: 10px;
-}
-
-#sidebar.collapsed {
-  width: 50px;
 }
 
 #sidebar.collapsed .sidebar-menu a {
