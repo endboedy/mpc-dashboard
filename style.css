@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
@@ -35,6 +34,7 @@ aside {
   transition: width 0.3s ease;
   color: white;
   height: calc(100vh - 60px);
+  overflow-y: auto;
 }
 
 aside.collapsed {
@@ -54,16 +54,40 @@ aside.collapsed {
   padding-left: 10px;
 }
 
-.sidebar-menu a {
-  display: block;
-  color: white;
-  text-decoration: none;
+.sidebar-menu ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+.sidebar-menu li {
   margin: 5px 0;
+  color: white;
   font-weight: bold;
 }
 
+.sidebar-menu > ul > li {
+  font-weight: bold; /* Menu utama */
+  color: #ffffff;
+}
+
+.sidebar-menu > ul > li > ul > li {
+  font-weight: normal; /* Submenu */
+  color: #e0f0ff;
+}
+
+.sidebar-menu > ul > li > ul > li > ul > li {
+  font-weight: lighter; /* Sub-submenu */
+  color: #f9f9f9;
+}
+
+.sidebar-menu a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  padding: 2px 0;
+}
+
 .sidebar-menu a.active {
-  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -111,7 +135,7 @@ th, td {
 }
 
 th {
-  background-color: #1E3A8A; /* Biru navy */
+  background-color: #1E3A8A;
   color: white;
   font-weight: bold;
 }
