@@ -89,12 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  loadData(); // Listener aktif saat halaman siap
+  // Tombol filter manual
+  const filterButton = document.getElementById("filterButton");
+  if (filterButton) {
+    filterButton.addEventListener("click", loadData);
+  }
 
-  // Tambahkan event listener untuk filter
-  document.getElementById("filterEquipment").addEventListener("input", loadData);
-  document.getElementById("filterPIT").addEventListener("input", loadData);
-  document.getElementById("filterActivity").addEventListener("input", loadData);
+  loadData(); // Load awal
 });
 
 // Filter data
